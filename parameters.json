@@ -1,0 +1,11 @@
+[
+    {
+      "ParameterKey": "KeyPairName",
+      "ParameterValue": "MyKey"
+    },
+    {
+      "ParameterKey": "InstanceType",
+      "ParameterValue": "t2.micro"
+    }
+  ]
+  
