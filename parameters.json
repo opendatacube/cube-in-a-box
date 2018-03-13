@@ -1,11 +1,11 @@
 [
     {
-      "ParameterKey": "KeyPairName",
-      "ParameterValue": "MyKey"
+      "ParameterKey": "KeyName",
+      "ParameterValue": "alex-crcsi-keypair-2018"
     },
     {
       "ParameterKey": "InstanceType",
-      "ParameterValue": "t2.micro"
+      "ParameterValue": "t2.small"
     }
   ]
   
