@@ -1,11 +1,15 @@
 [
     {
       "ParameterKey": "KeyName",
-      "ParameterValue": "alex-crcsi-keypair-2018"
+      "ParameterValue": "felix_crc_pair"
     },
     {
       "ParameterKey": "InstanceType",
       "ParameterValue": "t2.small"
+    },
+    {
+      "ParameterKey": "ExtentToIndex",
+      "ParameterValue":"144.1,144.2,-34.5,-34.6"
     }
   ]
   

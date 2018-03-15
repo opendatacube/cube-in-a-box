@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_DB=opendatacube
+      - POSTGRES_PASSWORD=opendatacubepassword
+      - POSTGRES_USER=opendatacube
+
+  redis:
+    image: redis:alpine
+
+  opendatacube:
+    build:
+      context: .
+      dockerfile: DockerfileJupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./data:/data
+      - ./output:/output
+      - ./notebooks:/notebooks
+      - ./data_scripts:/data_scripts
+      - ./config/datacube.conf:/root/.datacube.conf
+      - ./config/datacube_integration.conf:/root/.datacube_integration.conf
+    shm_size: 1g
+    command: jupyter notebook --allow-root --ip="*" --NotebookApp.token=''

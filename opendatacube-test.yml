@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Metadata: 
+Metadata:
   License: Apache-2.0
 Description: 'Open Data Cube template with EC2 instance and RDS.'
 Parameters:
@@ -12,11 +12,15 @@ Parameters:
     Type: String
     Default: t2.small
     AllowedValues: [
-      t2.small, t2.medium, t2.large, 
+      t2.small, t2.medium, t2.large,
       m1.large, m1.xlarge, m2.xlarge,
       c4.large, c4.xlarge, c4.2xlarge,
       g2.8xlarge, r3.large, r3.xlarge]
     ConstraintDescription: must be a valid EC2 instance type.
+  ExtentToIndex:
+    Description: An extent to index within the cube in this box.
+    Type: String
+    Default: '[1.1919, 1.4509, 6.0809, 6.2218]'
   SSHLocation:
     Description: The IP address range that can be used to SSH to the EC2 instances
     Type: String
@@ -33,6 +37,7 @@ Resources:
       SecurityGroups: [!Ref 'InstanceSecurityGroup']
       KeyName: !Ref 'KeyName'
       ImageId: 'ami-08e0276a'
+      IamInstanceProfile: 'aws-landsat-access'
       UserData:
         Fn::Base64:
           Fn::Join:
@@ -48,7 +53,7 @@ Resources:
               - "service cfn-hup start \n"
               - "\n"
               - "/usr/local/bin/cfn-init --stack "
-              - Ref: AWS::StackId 
+              - Ref: AWS::StackId
               - " --resource EC2Instance --region "
               - Ref: AWS::Region
               - "\n"
@@ -78,12 +83,20 @@ Resources:
             /home/ubuntu/get-repo:
               content: |
                 #!/bin/bash -eu
-                apt-get install 
-                wget https://github.com/crc-si/opendatacube-cloudformation-testing/archive/master.zip -O /tmp/archive.zip
-                cd /opt
+                apt-get install
+                wget https://github.com/alexgleith/docker-opendatacube/archive/master.zip -O /tmp/archive.zip
                 unzip /tmp/archive.zip
-                mv opendatacube-cloudformation-testing-master odc-test
+                mv docker-opendatacube-master /opt/odc-test
 
+              mode: '000700'
+              owner: ubuntu
+              group: ubuntu
+
+
+            /home/ubuntu/index-config:
+              content:
+                "extent":
+                  "Ref" : "ExtentToIndex"
               mode: '000700'
               owner: ubuntu
               group: ubuntu
@@ -95,8 +108,13 @@ Resources:
                 sh /home/ubuntu/get-repo
             02-run-opendatacube:
               command: |
-                docker-compose -f /opt/odc-test/docker-compose.yml pull
-                docker-compose -f /opt/odc-test/docker-compose.yml up -d
+                sudo docker-compose -f /opt/odc-test/docker-compose.yml pull
+                sudo docker-compose -f /opt/odc-test/docker-compose.yml up -d
+                sudo docker-compose exec /opt/odc-test/opendatacube datacube -v system init
+            03-index-AWSLS8:
+              command: |
+                sudo docker-compose exec sh /opt/odc-test/opendatacube/data_scripts/load-LS8.sh
+                sudo docker-compose exec sh /opt/odc-test/opendatacube/notebooks/aws_ls8_bucket.py landsat-pds L8/001/003/
 
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
