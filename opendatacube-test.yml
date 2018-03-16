@@ -36,7 +36,7 @@ Resources:
       InstanceType: !Ref 'InstanceType'
       SecurityGroups: [!Ref 'InstanceSecurityGroup']
       KeyName: !Ref 'KeyName'
-      ImageId: 'ami-08e0276a'
+      ImageId: 'ami-d38a4ab1'
       IamInstanceProfile: 'aws-landsat-access'
       UserData:
         Fn::Base64:
@@ -61,7 +61,7 @@ Resources:
               - "\n"
       Tags:
         - Key:   "Name"
-          Value: "OpenDataCube Test"
+          Value: "OpenDataCube Test1"
     Metadata:
       # see http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-init.html
       AWS::CloudFormation::Init:
@@ -84,9 +84,9 @@ Resources:
               content: |
                 #!/bin/bash -eu
                 apt-get install
-                wget https://github.com/alexgleith/docker-opendatacube/archive/master.zip -O /tmp/archive.zip
+                wget https://github.com/crc-si/opendatacube-cloudformation-testing/archive/master.zip -O /tmp/archive.zip
                 unzip /tmp/archive.zip
-                mv docker-opendatacube-master /opt/odc-test
+                mv  opendatacube-cloudformation-testing-master /opt/odc-test
 
               mode: '000700'
               owner: ubuntu
@@ -108,13 +108,13 @@ Resources:
                 sh /home/ubuntu/get-repo
             02-run-opendatacube:
               command: |
-                sudo docker-compose -f /opt/odc-test/docker-compose.yml pull
-                sudo docker-compose -f /opt/odc-test/docker-compose.yml up -d
-                sudo docker-compose exec /opt/odc-test/opendatacube datacube -v system init
+                sudo docker-compose -f /opt/odc-test/docker-opendatacube/docker-compose.yml pull
+                sudo docker-compose -f /opt/odc-test/docker-opendatacube/docker-compose.yml up -d
+                sudo docker-compose exec datacube -v system init
             03-index-AWSLS8:
               command: |
-                sudo docker-compose exec sh /opt/odc-test/opendatacube/data_scripts/load-LS8.sh
-                sudo docker-compose exec sh /opt/odc-test/opendatacube/notebooks/aws_ls8_bucket.py landsat-pds L8/001/003/
+                sudo docker-compose exec datacube product add /opt/opendatacube/docs/config_samples/dataset_types/ls_usgs.yaml
+                sudo docker-compose exec python3 /notebooks/aws_ls8_bucket.py landsat-pds L8/001/003/
 
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup

@@ -17,11 +17,19 @@ from datacube.utils import changes
 
 MTL_PAIRS_RE = re.compile(r'(\w+)\s=\s(.*)')
 
-bands_ls8 = [
-           ('2', 'blue'),
-           ('3', 'green'),
-           ('4', 'red'),
-           ('5', 'nir'),
+bands_ls8 = [('1', 'coastal_aerosol'),
+              ('2', 'blue'),
+              ('3', 'green'),
+              ('4', 'red'),
+              ('5', 'nir'),
+              ('6', 'swir1'),
+              ('7', 'swir2'),
+              ('8', 'panchromatic'),
+              ('9', 'cirrus'),
+              ('10', 'lwir1'),
+              ('11', 'lwir2'),
+              ('QUALITY', 'quality')]
+
            ]
 
 
@@ -116,7 +124,7 @@ def make_metadata_doc(mtl_data, bucket_name, object_key):
     doc = {
         'id': str(uuid.uuid5(uuid.NAMESPACE_URL, get_s3_url(bucket_name, object_key))),
         'processing_level': level,
-        'product_type': 'Level1',
+        'product_type': 'L1TP',
         'creation_dt': str(acquisition_date),
         'label': label,
         'platform': {'code': satellite},

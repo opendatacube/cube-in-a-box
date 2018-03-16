@@ -25,4 +25,4 @@ services:
       - ./config/datacube.conf:/root/.datacube.conf
       - ./config/datacube_integration.conf:/root/.datacube_integration.conf
     shm_size: 1g
-    command: jupyter notebook --allow-root --ip="*" --NotebookApp.token=''
+    command: sh /data_scripts/load-test.sh
