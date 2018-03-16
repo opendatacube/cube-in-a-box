@@ -110,11 +110,6 @@ Resources:
               command: |
                 sudo docker-compose -f /opt/odc-test/docker-opendatacube/docker-compose.yml pull
                 sudo docker-compose -f /opt/odc-test/docker-opendatacube/docker-compose.yml up -d
-                sudo docker-compose exec datacube -v system init
-            03-index-AWSLS8:
-              command: |
-                sudo docker-compose exec datacube product add /opt/opendatacube/docs/config_samples/dataset_types/ls_usgs.yaml
-                sudo docker-compose exec python3 /notebooks/aws_ls8_bucket.py landsat-pds L8/001/003/
 
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
