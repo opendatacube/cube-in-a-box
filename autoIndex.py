@@ -1,6 +1,7 @@
 import sys, getopt
 import ogr
-
+import json
+import os
 #/home/ubuntu/index-config
 
 def convertLatLongToPathRows(extent,ascending,path):
@@ -51,8 +52,8 @@ def main(argv):
 
 
    fileMe = open(inputfile, "r")
-   stringMe = fileMe.readlines()[0]
-   x1,x2,y1,y2 = eval(stringMe)
+   stringMe = json.loads(fileMe.readlines()[0])
+   x1,x2,y1,y2 = map(float, stringMe['extent'].split(','))
    xmin = min([x1,x2])
    xmax = max([x1,x2])
    ymin = min([y1,y2])
