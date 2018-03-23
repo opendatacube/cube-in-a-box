@@ -18,4 +18,4 @@ Deploying to AWS:
 
 
 # IMPORTANT NOTES
-To be able to get data from S3, you need to ensure that the environment variables ODC_ACCESS_KEY and ODC_SECRET_KEY are set to something valid.
+To be able to get data from S3, you need to ensure that the environment variables `ODC_ACCESS_KEY` and `ODC_SECRET_KEY` are set to something valid.
