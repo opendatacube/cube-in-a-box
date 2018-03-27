@@ -18,14 +18,16 @@ def convert_ll_to_pr(extent, ascending, path):
     layer = dataSource.GetLayer()
 
     ring = ogr.Geometry(ogr.wkbLinearRing)
-    ring.AddPoint(extent[0], extent[1])
-    ring.AddPoint(extent[0], extent[3])
-    ring.AddPoint(extent[2], extent[3])
+    # Stupid geometry is lat, lon instead of lon, lat...
+    ring.AddPoint(extent[2], extent[0])
+    ring.AddPoint(extent[3], extent[0])
+    ring.AddPoint(extent[3], extent[1])
     ring.AddPoint(extent[2], extent[1])
-    ring.AddPoint(extent[0], extent[1])
+    ring.AddPoint(extent[2], extent[0])
     poly = ogr.Geometry(ogr.wkbPolygon)
     poly.AddGeometry(ring)
 
+    logging.info("Usion bbox filter: {}".format(poly.ExportToJson()))
     layer.SetSpatialFilter(poly)
     logging.info("Found {} features.".format(layer.GetFeatureCount()))
     if not ascending:

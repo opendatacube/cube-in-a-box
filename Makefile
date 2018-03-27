@@ -31,5 +31,9 @@ index:
 
 # Get the pathrows file
 download-pathrows-file:
-	-mkdir -p ./data
 	wget https://landsat.usgs.gov/sites/default/files/documents/wrs1_asc_desc.zip -O ./data/wrs1_asc_desc.zip
+
+# Delete everything
+clear:
+	docker-compose stop
+	docker-compose rm -fs
