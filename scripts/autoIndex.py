@@ -10,7 +10,7 @@ def convert_ll_to_pr(extent, ascending, path):
     """ Convert lat, lon to pathrows """
     logger.info("Starting the conversion from ll to pathrow for area: {}".format(extent))
     driver = ogr.GetDriverByName('ESRI Shapefile')
-    file_path = '/vsizip/' + path + '/wrs1_asc_desc'
+    file_path = '/vsizip/' + path + '/wrs2_asc_desc'
     dataSource = driver.Open(file_path, 0) # 0 means read-only. 1 means writeable.
     if not dataSource:
         logger.error("Failed to open the file: {}".format(file_path))
@@ -29,15 +29,18 @@ def convert_ll_to_pr(extent, ascending, path):
 
     logging.info("Usion bbox filter: {}".format(poly.ExportToJson()))
     layer.SetSpatialFilter(poly)
-    logging.info("Found {} features.".format(layer.GetFeatureCount()))
-    if not ascending:
-        layer.SetAttributeFilter("MODE_ = 'A'")
-    else:
-        layer.SetAttributeFilter("MODE_ = 'D'")
 
+    if not ascending:
+        layer.SetAttributeFilter("MODE = 'A'")
+
+    else:
+        layer.SetAttributeFilter("MODE = 'D'")
+
+
+    logging.info("Found {} features.".format(layer.GetFeatureCount()))
     pathRows = []
     for pInfo in layer:
-        pathRows.append([pInfo.GetField('PATH'), pInfo.GetField('ROW_')])
+        pathRows.append([pInfo.GetField('PATH'), pInfo.GetField('ROW')])
 
     return pathRows
 
