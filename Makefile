@@ -27,7 +27,7 @@ index:
 	# Note that you need environment variables ODC_ACCESS_KEY and ODC_SECRET_KEY set.
 	# These need to be valid AWS keys. KEEP THEM SECRET, KEEP THEM SAFE!
 	docker-compose exec opendatacube bash -c \
-		"cd /opt/odc/scripts && python3 ./autoIndex.py -e '-42.51,-41.5,152.1,153.11' -p '/opt/odc/data/wrs1_asc_desc.zip'"
+		"cd /opt/odc/scripts && python3 ./autoIndex.py -e '152.1,153.11,-42.51,-41.5' -p '/opt/odc/data/wrs1_asc_desc.zip'"
 
 # Get the pathrows file
 download-pathrows-file:

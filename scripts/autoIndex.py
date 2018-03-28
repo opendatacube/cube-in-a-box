@@ -19,11 +19,11 @@ def convert_ll_to_pr(extent, ascending, path):
 
     ring = ogr.Geometry(ogr.wkbLinearRing)
     # Stupid geometry is lat, lon instead of lon, lat...
-    ring.AddPoint(extent[2], extent[0])
-    ring.AddPoint(extent[3], extent[0])
-    ring.AddPoint(extent[3], extent[1])
-    ring.AddPoint(extent[2], extent[1])
-    ring.AddPoint(extent[2], extent[0])
+    ring.AddPoint(extent[0], extent[2])
+    ring.AddPoint(extent[0], extent[3])
+    ring.AddPoint(extent[1], extent[3])
+    ring.AddPoint(extent[1], extent[2])
+    ring.AddPoint(extent[0], extent[2])
     poly = ogr.Geometry(ogr.wkbPolygon)
     poly.AddGeometry(ring)
 
@@ -43,7 +43,7 @@ def convert_ll_to_pr(extent, ascending, path):
 
 # Probably should use Click like the other scripts? -agl
 @click.command()
-@click.option('--extents', '-e', default="-42.51,-41.5,152.1,153.11", help="Extent to index in the form lon_min,lon_max,lat_min,latmax")
+@click.option('--extents', '-e', default="152.1,153.11,-42.51,-41.5", help="Extent to index in the form lon_min,lon_max,lat_min,latmax")
 @click.option('--pathrow_file', '-p', default="/opt/odc/data/wrs1_asc_desc.zip", help="Absolute path to the pathrow file, e.g., /tmp/example.zip")
 def index(extents, pathrow_file):
    lon_min, lon_max, lat_min, lat_max = map(float, extents.split(','))
