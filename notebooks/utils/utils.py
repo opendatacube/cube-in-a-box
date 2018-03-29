@@ -32,9 +32,9 @@ def threeBandImage(ds, bands, time = 0, figsize = [10,10], projection = 'project
     return img_toshow
 
 def loadConfigExtent():
-    config = json.load(open('/opt/odc/data/configIndex.txt'))
-    lon_min, lon_max, lat_min, lat_max = map(float, config['extent'].split(','))
+    config = json.load(open('/opt/odc/data/extents.txt'))
+    lon_min, lon_max, lat_min, lat_max = config['extent']
     #centre = [(lat_min+ lat_max)/2,(lon_min + lon_max)/2]
     rectangle =  [[lat_max,lon_min],[lat_max,lon_max], [lat_min,lon_max],[lat_min,lon_min],[lat_max,lon_min]]
-    return [[lon_min, lon_max, lat_min, lat_max],rectangle]
+    return [[lon_min, lon_max, lat_min, lat_max], rectangle]
     

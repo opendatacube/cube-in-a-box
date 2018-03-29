@@ -1,2 +1,3 @@
 data
 notebooks/.ipnb_checkpoints
+*.pyc
