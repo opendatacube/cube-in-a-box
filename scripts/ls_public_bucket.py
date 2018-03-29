@@ -121,7 +121,7 @@ def make_metadata_doc(mtl_data, bucket_name, object_key):
     acquisition_date = mtl_product_info['DATE_ACQUIRED']
     scene_center_time = mtl_product_info['SCENE_CENTER_TIME']
     level = mtl_product_info['DATA_TYPE']
-    product_type = 'level1'
+    product_type = 'L1TP'
     sensing_time = acquisition_date + ' ' + scene_center_time
     cs_code = 32600 + mtl_data['PROJECTION_PARAMETERS']['UTM_ZONE']
     label = mtl_metadata_info['LANDSAT_SCENE_ID']

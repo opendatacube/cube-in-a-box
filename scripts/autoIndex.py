@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 import ogr
 import os
+import subprocess
 import click
 import logging
+import json
 
 logger = logging.getLogger('odcindexer')
 
@@ -47,9 +49,11 @@ def convert_ll_to_pr(extent, ascending, path):
 # Probably should use Click like the other scripts? -agl
 @click.command()
 @click.option('--extents', '-e', default="152.1,153.11,-42.51,-41.5", help="Extent to index in the form lon_min,lon_max,lat_min,latmax")
-@click.option('--pathrow_file', '-p', default="/opt/odc/data/wrs1_asc_desc.zip", help="Absolute path to the pathrow file, e.g., /tmp/example.zip")
+@click.option('--pathrow_file', '-p', default="/opt/odc/data/wrs2_asc_desc.zip", help="Absolute path to the pathrow file, e.g., /tmp/example.zip")
 def index(extents, pathrow_file):
-   lon_min, lon_max, lat_min, lat_max = map(float, extents.split(','))
+   config = json.load(open('/opt/odc/data/configIndex.txt'))
+   lon_min, lon_max, lat_min, lat_max = map(float, config['extent'].split(','))
+#   lon_min, lon_max, lat_min, lat_max = map(float, extents.split(','))
 
    pathRows = convert_ll_to_pr([lon_min, lon_max, lat_min, lat_max], True, pathrow_file)
    if not pathRows:
@@ -57,7 +61,9 @@ def index(extents, pathrow_file):
        return
    logging.info("Found {} pathrows to handle".format((len(pathRows))))
    for pathRow in pathRows:
-        os.system('python3 ./ls_public_bucket.py landsat-pds -p c1/L8/' + str(pathRow[0]) + '//' + str(pathRow[0]) + '//')
+	
+        #os.system('python3 ./ls_public_bucket.py landsat-pds -p c1/L8/' + str(pathRow[0]) + '/' + str(pathRow[1]) + '/')
+        os.system('python3 ./ls_public_bucket.py landsat-pds -p c1/L8/' + "%03d" % (pathRow[0],) + '/' + "%03d" % (pathRow[1],) + '/')
 
 if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)

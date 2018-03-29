@@ -22,7 +22,7 @@ up:
 initdb:
 
 	docker-compose exec opendatacube datacube -v system init
-	docker-compose exec opendatacube datacube product add /opt/odc/scripts/ls_usgs.yaml
+	docker-compose exec opendatacube datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml
 
 
 # Index a dataset (just an example)
@@ -31,7 +31,7 @@ index:
 	# These need to be valid AWS keys. KEEP THEM SECRET, KEEP THEM SAFE!
 
 	docker-compose exec opendatacube bash -c \
-		"cd /opt/odc/scripts && python3 ./autoIndex.py -e '-42.51,-41.5,152.1,153.11' -p '/opt/odc/data/wrs2_asc_desc.zip'"
+		"cd /opt/odc/scripts && python3 ./autoIndex.py -p '/opt/odc/data/wrs2_asc_desc.zip'"
 
 # Get the pathrows file
 download-pathrows-file:
