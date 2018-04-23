@@ -18,6 +18,9 @@ update-infra:
 up:
 	docker-compose up
 
+build:
+	docker-compose build
+
 # Prepare the database
 initdb:
 
@@ -32,6 +35,11 @@ index:
 
 	docker-compose exec opendatacube bash -c \
 		"cd /opt/odc/scripts && python3 ./autoIndex.py -p '/opt/odc/data/wrs2_asc_desc.zip' -e '146.30,146.83,-43.54,-43.20'"
+
+# This will load summary info into the DEA dashboard app
+prepare-dashboard:
+	docker-compose exec dashboard bash -c\
+		"mkdir /code/product-summaries; python3 -m cubedash.generate --all"
 
 # Get the pathrows file
 download-pathrows-file:

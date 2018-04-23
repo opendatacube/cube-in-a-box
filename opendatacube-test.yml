@@ -20,7 +20,7 @@ Parameters:
   ExtentToIndex:
     Description: An extent to index within the cube in this box.
     Type: String
-    Default: '[1.1919, 1.4509, 6.0809, 6.2218]'
+    Default: '146.30,146.83,-43.54,-43.20'
   SSHLocation:
     Description: The IP address range that can be used to SSH to the EC2 instances
     Type: String
@@ -61,7 +61,7 @@ Resources:
               - "\n"
       Tags:
         - Key:   "Name"
-          Value: "OpenDataCube Test1"
+          Value: "OpenDataCube Test"
     Metadata:
       # see http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-init.html
       AWS::CloudFormation::Init:
@@ -92,15 +92,6 @@ Resources:
               owner: ubuntu
               group: ubuntu
 
-
-            /home/ubuntu/index-config:
-              content:
-                "extent":
-                  "Ref" : "ExtentToIndex"
-              mode: '000700'
-              owner: ubuntu
-              group: ubuntu
-
           commands:
             01-setup-opendatacube:
               command: |
@@ -110,6 +101,12 @@ Resources:
               command: |
                 sudo docker-compose -f /opt/odc-test/docker-opendatacube/docker-compose.yml pull
                 sudo docker-compose -f /opt/odc-test/docker-opendatacube/docker-compose.yml up -d
+                sleep 30
+                docker-compose exec opendatacube datacube -v system init
+                docker-compose exec opendatacube datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml
+                >
+                  docker-compose exec opendatacube bash -c 
+                  "cd /opt/odc/scripts && python3 ./autoIndex.py -p '/opt/odc/data/wrs2_asc_desc.zip' -e " !Ref 'ExtentToIndex'
 
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -121,9 +118,14 @@ Resources:
         ToPort: '22'
         CidrIp: !Ref 'SSHLocation'
       - IpProtocol: tcp
+        FromPort: '80'
+        ToPort: '80'
+        CidrIp: !Ref 'SSHLocation'
+      - IpProtocol: tcp
         FromPort: '8888'
         ToPort: '8888'
         CidrIp: !Ref 'SSHLocation'
+
 Outputs:
   InstanceId:
     Description: InstanceId of the newly created EC2 instance
