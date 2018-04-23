@@ -4,7 +4,7 @@ create-infra:
 		--stack-name odc-test \
 		--template-body file://opendatacube-test.yml \
 		--parameter file://parameters.json \
-		--tags Key=name,Value=OpenDataCube \
+		--tags Key=Name,Value=OpenDataCube \
 		--capabilities CAPABILITY_NAMED_IAM
 
 update-infra:
@@ -12,7 +12,7 @@ update-infra:
 		--stack-name odc-test \
 		--template-body file://opendatacube-test.yml \
 		--parameter file://parameters.json \
-		--tags Key=name,Value=OpenDataCube \
+		--tags Key=Name,Value=OpenDataCube \
 		--capabilities CAPABILITY_NAMED_IAM
 
 up:
