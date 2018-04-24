@@ -7,7 +7,8 @@ from datacube import Datacube
 from datetime import datetime
 from skimage import exposure
 import numpy as np
-
+import osr
+import ogr
 
 def threeBandImage(ds, bands, time = 0, figsize = [10,10], projection = 'projected'):
     '''
@@ -37,4 +38,17 @@ def loadConfigExtent():
     #centre = [(lat_min+ lat_max)/2,(lon_min + lon_max)/2]
     rectangle =  [[lat_max,lon_min],[lat_max,lon_max], [lat_min,lon_max],[lat_min,lon_min],[lat_max,lon_min]]
     return [[lon_min, lon_max, lat_min, lat_max], rectangle]
-    
+
+ 
+def transformToWGS(getLong, getLat, EPSGa):
+    source = osr.SpatialReference()
+    source.ImportFromEPSG(EPSGa)
+
+    target = osr.SpatialReference()
+    target.ImportFromEPSG(4326)
+
+    transform = osr.CoordinateTransformation(source, target)
+
+    point = ogr.CreateGeometryFromWkt("POINT (" + str(getLong[0]) + " " + str(getLat[0]) + ")")
+    point.Transform(transform)
+    return [point.GetX(), point.GetY()]
