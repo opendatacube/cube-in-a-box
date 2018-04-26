@@ -60,19 +60,18 @@ Resources:
                 sed --in-place '/AWS_/d' /opt/odc-test/docker-compose.yml
               - |
                 # Start the thing
+                chmod -R 777 /opt/odc-test/notebooks
                 cd /opt/odc-test
                 sudo docker-compose pull
                 sudo docker-compose up -d
                 sleep 30
                 docker-compose exec jupyter datacube -v system init
                 docker-compose exec jupyter datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml
-                wget https://landsat.usgs.gov/sites/default/files/documents/wrs2_asc_desc.zip -O /opt/odc/data/wrs2_asc_desc.zip
+                wget https://landsat.usgs.gov/sites/default/files/documents/wrs2_asc_desc.zip -O /opt/odc-test/data/wrs2_asc_desc.zip
               - 'docker-compose exec opendatacube '
-              - 'bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -p ''/opt/odc/data/wrs2_asc_desc.zip'' -e "'
+              - 'bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -p ''/opt/odc/data/wrs2_asc_desc.zip'' -e '
               - !Ref 'ExtentToIndex'
-              - |
-                # Finished ;-)
-                echo "Done"
+              - '"'
         
       Tags:
         - Key:   "Name"
