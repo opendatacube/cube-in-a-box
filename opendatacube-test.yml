@@ -44,22 +44,8 @@ Resources:
             - ''
             - - |
                 #!/bin/bash -ex
-                # Install immediate dependencies
-                apt-get update && apt-get -y install python-pip
-                pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz
-                cp /usr/local/init/ubuntu/cfn-hup /etc/init.d/cfn-hup
-                chmod +x /etc/init.d/cfn-hup
-                update-rc.d cfn-hup defaults
-                service cfn-hup start
-                # Set up the dependent files
-              - '/usr/local/bin/cfn-init -v '
-              - '        --stack '
-              - Ref: AWS::StackId
-              - '        --resource EC2Instance '
-              - '        --region '
-              - Ref: AWS::Region
-              - |
                 # Install our dependencies
+                apt-get update && apt-get -y install python-pip
                 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
                 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
                 apt-get update
@@ -71,17 +57,18 @@ Resources:
                 unzip /tmp/archive.zip
                 mv  opendatacube-cloudformation-testing-master /opt/odc-test
                 # We need to remove some local vars. This is a hack...
-                sed --in-place '/AWS_/d' /opt/odc/docker-compose.yml
+                sed --in-place '/AWS_/d' /opt/odc-test/docker-compose.yml
               - |
                 # Start the thing
-                sudo docker-compose -f /opt/odc-test/docker-opendatacube/docker-compose.yml pull
-                sudo docker-compose -f /opt/odc-test/docker-opendatacube/docker-compose.yml up -d
+                cd /opt/odc-test
+                sudo docker-compose pull
+                sudo docker-compose up -d
                 sleep 30
                 docker-compose exec jupyter datacube -v system init
                 docker-compose exec jupyter datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml
                 wget https://landsat.usgs.gov/sites/default/files/documents/wrs2_asc_desc.zip -O /opt/odc/data/wrs2_asc_desc.zip
-              - 'docker-compose exec opendatacube bash -c '
-              - '"cd /opt/odc/scripts && python3 ./autoIndex.py -p ''/opt/odc/data/wrs2_asc_desc.zip'' -e "'
+              - 'docker-compose exec opendatacube '
+              - 'bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -p ''/opt/odc/data/wrs2_asc_desc.zip'' -e "'
               - !Ref 'ExtentToIndex'
               - |
                 # Finished ;-)
