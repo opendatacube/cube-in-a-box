@@ -11,7 +11,6 @@ services:
   jupyter:
     image: opendatacube/datacube-jupyter
     environment:
-      - DATACUBE_CONFIG_PATH=/opt/odc/datacube.conf
       - DB_HOSTNAME=postgres
       - DB_USERNAME=opendatacube
       - DB_PASSWORD=opendatacubepassword
