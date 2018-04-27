@@ -23,17 +23,14 @@ build:
 
 # Prepare the database
 initdb:
-
-	docker-compose exec opendatacube datacube -v system init
-	docker-compose exec opendatacube datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml
-
+	docker-compose exec jupyter datacube -v system init
+	docker-compose exec jupyter datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml
 
 # Index a dataset (just an example)
 index:
 	# Note that you need environment variables ODC_ACCESS_KEY and ODC_SECRET_KEY set.
 	# These need to be valid AWS keys. KEEP THEM SECRET, KEEP THEM SAFE!
-
-	docker-compose exec opendatacube bash -c \
+	docker-compose exec jupyter bash -c \
 		"cd /opt/odc/scripts && python3 ./autoIndex.py -p '/opt/odc/data/wrs2_asc_desc.zip' -e '146.30,146.83,-43.54,-43.20'"
 
 # This will load summary info into the DEA dashboard app

@@ -2,4 +2,8 @@ data
 notebooks/.ipynb_checkpoints/
 notebooks/.datacube.conf
 notebooks/.local/
+notebooks/.cache/
+notebooks/.ipython/
+notebooks/.jupyter/
+notebooks/.python_history
 *.pyc
