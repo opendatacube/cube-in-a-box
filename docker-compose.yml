@@ -18,23 +18,10 @@ services:
       - AWS_ACCESS_KEY_ID=${ODC_ACCESS_KEY}
       - AWS_SECRET_ACCESS_KEY=${ODC_SECRET_KEY}
     ports:
-      - "8888:8888"
+      - "80:8888"
     volumes:
       - ./scripts:/opt/odc/scripts
       - ./data:/opt/odc/data
       - ./notebooks:/notebooks
     shm_size: 1g
     command: jupyter notebook --allow-root --ip="*" --NotebookApp.token='secretpassword'
-
-  dashboard:
-    image: opendatacube/dashboard
-    environment:
-      - DB_HOSTNAME=postgres
-      - DB_USERNAME=opendatacube
-      - DB_PASSWORD=opendatacubepassword
-      - DB_DATABASE=opendatacube
-      - AWS_ACCESS_KEY_ID=${ODC_ACCESS_KEY}
-      - AWS_SECRET_ACCESS_KEY=${ODC_SECRET_KEY}
-    ports:
-      - "80:80"
-    command: gunicorn -b '0.0.0.0:80' -w 5 --timeout 300 cubedash:app

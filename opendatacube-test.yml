@@ -25,6 +25,10 @@ Parameters:
     Description: Password to open up the Jupyter notebook
     Type: String
     Default: 'secretpassword'
+  EC2InstanceName:
+    Description: Password to open up the Jupyter notebook
+    Type: String
+    Default: 'CubeInABox'
   SSHLocation:
     Description: The IP address range that can be used to access the Cube in a Box
     Type: String
@@ -74,10 +78,9 @@ Resources:
           docker-compose exec -T jupyter datacube -v system init
           docker-compose exec -T jupyter datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml
           docker-compose exec -T jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -p ''/opt/odc/data/wrs2_asc_desc.zip'' -e ${ExtentToIndex}"
-          docker-compose exec -T dashboard bash -c "mkdir /code/product-summaries; python3 -m cubedash.generate --all"
       Tags:
         - Key:   "Name"
-          Value: "OpenDataCube Test"
+          Value: !Ref 'EC2InstanceName'
 
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
