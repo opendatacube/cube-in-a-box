@@ -16,7 +16,7 @@ Todo:
 To deploy to AWS, you cam either do it on the command line, with the AWS command line installed or the magic URL below and the AWS console.
 
 ## Magic URL
-[Launch a Cube in a Box](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?stackName=cube_in_a_box&templateURL=https://s3-ap-southeast-2.amazonaws.com/cubeinabox/opendatacube-test.yml)
+[Launch a Cube in a Box](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?stackName=cube-in-a-box&templateURL=https://s3-ap-southeast-2.amazonaws.com/cubeinabox/opendatacube-test.yml)
 
 ## Command line
  * Alter the parameters in the [parameters.json](./parameters.json) file

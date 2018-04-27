@@ -26,7 +26,7 @@ Parameters:
     Type: String
     Default: 'secretpassword'
   SSHLocation:
-    Description: The IP address range that can be used to SSH to the EC2 instances
+    Description: The IP address range that can be used to access the Cube in a Box
     Type: String
     MinLength: '9'
     MaxLength: '18'
