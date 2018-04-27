@@ -46,3 +46,7 @@ download-pathrows-file:
 clear:
 	docker-compose stop
 	docker-compose rm -fs
+
+# Update S3 template
+update-s3:
+	aws s3 cp opendatacube-test.yml s3://cubeinabox/ --acl public-read
