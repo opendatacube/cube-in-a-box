@@ -6,7 +6,6 @@ from datacube.storage import masking
 from datacube import Datacube
 from datetime import datetime
 from skimage import exposure
-import utils.landsat_qa_lookup as lookup_dict
 import numpy as np
 import osr
 import ogr
@@ -107,63 +106,5 @@ def decodeQABand(toCheck, sensor = 'L8', band = 'BQA', rm_low = False):
 
         # replace true_bits with filtered list
         true_bits = tbo
-
-    def get_label(bits):
-        """
-        Generate label for value in attribute table.
-        :param bits: <list> List of True or False for bit position
-        :return: <str> Attribute label
-        """
-        if len(bits) == 0:
-            if band == 'radsat_qa':
-                return 'No Saturation'
-
-            elif band == 'sr_cloud_qa' or band == 'sr_aerosol':
-                return 'None'
-
-            elif band == 'BQA':
-                return 'Not Determined'
-
-        # build description from all bits represented in value
-        desc = []
-        for tb in bits:
-            k = next(key for key, value in
-                     bit_flags[band][sensor].items() if value == tb)
-
-            # if 'low' labels are disabled, do not add them here
-            if rm_low and band != 'BQA' and 'low' in k.lower():
-                continue
-
-            # if last check, and not radiometric sat, set to 'clear'
-            elif rm_low and band == 'BQA' and 'low' in k.lower() and \
-                            tb == bits[-1] and \
-                            'radiometric' not in k.lower() and \
-                    not desc:
-                k = 'Clear'
-
-            # if BQA and bit is low radiometric sat, keep it
-            elif rm_low and band == 'BQA' and 'low' in k.lower():
-                if 'radiometric' not in k.lower():
-                    continue
-
-	        # if radsat_qa, handle differently to make display cleaner
-            if band == 'radsat_qa':
-    	        if not desc:
-    	            desc.append("Band {0} Data Saturation".format(tb[0]))
-
-    	        else:
-    	            desc.append("{0},{1} Data Saturation".format(
-    	                desc[:desc.find('Data') - 1], tb[0]))
-
-	    # string creation for all other bands
-            else:
-    	        desc.append("{0}".format(k))
-
-        # final check to make sure something was set
-        if not desc:
-            desc = 'ERROR: bit set incorrectly'
-
-        return desc
-
 
     return get_label(true_bits)
