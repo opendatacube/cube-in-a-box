@@ -1,7 +1,10 @@
-FROM opendatacube/datacube-core
+FROM opendatacube/jupyter
 
-RUN apt-get update && apt-get install -y ipython ipython-notebook
-RUN pip3 install jupyter matplotlib click scikit-image folium
+USER root
+
+RUN pip3 install matplotlib click scikit-image
+
+USER $NB_UID
 
 WORKDIR /notebooks
 
