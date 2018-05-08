@@ -23,6 +23,5 @@ To deploy to AWS, you cam either do it on the command line, with the AWS command
  * Run `make create-infra`
  * If you want to change the stack, you can do `make update-infra` (although it may be cleaner to delete and re-create the stack)
 
-
 # IMPORTANT NOTES
 In your local environment, in order to be able to get data from S3, you need to ensure that the environment variables `ODC_ACCESS_KEY` and `ODC_SECRET_KEY` are set to something valid.

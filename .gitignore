@@ -7,3 +7,11 @@ notebooks/.ipython/
 notebooks/.jupyter/
 notebooks/.python_history
 *.pyc
+notebooks/.cache/
+notebooks/.datacube.conf
+notebooks/.ipynb_checkpoints/
+notebooks/.ipython/
+notebooks/.jupyter/
+notebooks/.local/
+notebooks/.bash_history
+notebooks/.python_history

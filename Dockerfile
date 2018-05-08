@@ -1,11 +1,11 @@
-FROM opendatacube/datacube-jupyter:latest
+FROM opendatacube/jupyter
 
 USER root
 
-# Get more dependencies
-RUN pip3 install \
-    scikit-image \
-    && rm -rf $HOME/.cache/pip
+RUN pip3 install matplotlib click scikit-image pep8
 
-# Switch back to unprivileged user
 USER $NB_UID
+
+WORKDIR /notebooks
+
+CMD jupyter notebook
