@@ -22,7 +22,7 @@ up:
 	docker-compose up
 
 shell:
-	docker-compose exec jupyter bash
+	docker-compose exec opendatacube bash
 
 load-from-scratch: initdb download-pathrows-file index
 

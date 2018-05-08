@@ -7,4 +7,5 @@ notebooks/.ipynb_checkpoints/
 notebooks/.ipython/
 notebooks/.jupyter/
 notebooks/.local/
-
+notebooks/.bash_history
+notebooks/.python_history
