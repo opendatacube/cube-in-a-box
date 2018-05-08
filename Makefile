@@ -4,7 +4,7 @@ create-infra:
 		--stack-name odc-test \
 		--template-body file://opendatacube-test.yml \
 		--parameter file://parameters.json \
-		--tags Key=name,Value=OpenDataCube \
+		--tags Key=Name,Value=OpenDataCube \
 		--capabilities CAPABILITY_NAMED_IAM
 
 update-infra:
@@ -12,7 +12,7 @@ update-infra:
 		--stack-name odc-test \
 		--template-body file://opendatacube-test.yml \
 		--parameter file://parameters.json \
-		--tags Key=name,Value=OpenDataCube \
+		--tags Key=Name,Value=OpenDataCube \
 		--capabilities CAPABILITY_NAMED_IAM
 
 build:
@@ -21,8 +21,11 @@ build:
 up:
 	docker-compose up
 
+build:
+	docker-compose build
+
 shell:
-	docker-compose exec jupyter bash
+	docker-compose exec opendatacube bash
 
 load-from-scratch: initdb download-pathrows-file index
 
@@ -41,6 +44,7 @@ index:
 			-p '/opt/odc/data/wrs2_asc_desc.zip' \
 			-e '146.30,146.83,-43.54,-43.20'"
 
+
 # Get the pathrows file
 download-pathrows-file:
 	wget https://landsat.usgs.gov/sites/default/files/documents/wrs2_asc_desc.zip -O ./data/wrs2_asc_desc.zip
@@ -49,3 +53,7 @@ download-pathrows-file:
 clear:
 	docker-compose stop
 	docker-compose rm -fs
+
+# Update S3 template
+update-s3:
+	aws s3 cp opendatacube-test.yml s3://cubeinabox/ --acl public-read

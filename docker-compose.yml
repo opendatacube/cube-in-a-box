@@ -8,9 +8,8 @@ services:
       - POSTGRES_PASSWORD=opendatacubepassword
       - POSTGRES_USER=opendatacube
 
-  opendatacube:
-    build:
-      context: .
+  jupyter:
+    build: .
     environment:
       - DB_HOSTNAME=postgres
       - DB_USERNAME=opendatacube
@@ -19,7 +18,7 @@ services:
       - AWS_ACCESS_KEY_ID=${ODC_ACCESS_KEY}
       - AWS_SECRET_ACCESS_KEY=${ODC_SECRET_KEY}
     ports:
-      - "8888:8888"
+      - "80:8888"
     volumes:
       - ./scripts:/opt/odc/scripts
       - ./data:/opt/odc/data

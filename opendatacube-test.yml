@@ -18,11 +18,19 @@ Parameters:
       g2.8xlarge, r3.large, r3.xlarge]
     ConstraintDescription: must be a valid EC2 instance type.
   ExtentToIndex:
-    Description: An extent to index within the cube in this box.
+    Description: An extent to index for use in the Cube in a Box
     Type: String
-    Default: '[1.1919, 1.4509, 6.0809, 6.2218]'
+    Default: '146.30,146.83,-43.54,-43.20'
+  SecretPassword:
+    Description: Password to open up the Jupyter notebook
+    Type: String
+    Default: 'secretpassword'
+  EC2InstanceName:
+    Description: The name of the Cube in a Box EC2 instance
+    Type: String
+    Default: 'CubeInABox'
   SSHLocation:
-    Description: The IP address range that can be used to SSH to the EC2 instances
+    Description: The IP address range that can be used to access the Cube in a Box
     Type: String
     MinLength: '9'
     MaxLength: '18'
@@ -37,79 +45,42 @@ Resources:
       SecurityGroups: [!Ref 'InstanceSecurityGroup']
       KeyName: !Ref 'KeyName'
       ImageId: 'ami-d38a4ab1'
-      IamInstanceProfile: 'aws-landsat-access'
+      IamInstanceProfile: !Ref ODCInstanceProfile
       UserData:
-        Fn::Base64:
-          Fn::Join:
-            - ""
-            -
-              - "#!/bin/bash -ex"
-              - "\n"
-              - "apt-get update && apt-get -y install python-pip \n"
-              - "pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz \n"
-              - "cp /usr/local/init/ubuntu/cfn-hup /etc/init.d/cfn-hup \n"
-              - "chmod +x /etc/init.d/cfn-hup \n"
-              - "update-rc.d cfn-hup defaults \n "
-              - "service cfn-hup start \n"
-              - "\n"
-              - "/usr/local/bin/cfn-init --stack "
-              - Ref: AWS::StackId
-              - " --resource EC2Instance --region "
-              - Ref: AWS::Region
-              - "\n"
-              - "echo \"This is a test\" >> /tmp/test.txt"
-              - "\n"
+        Fn::Base64: !Sub |
+          #!/bin/bash -ex
+          # Install our dependencies
+          apt-get update && apt-get -y install python-pip
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+          add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+          apt-get update
+          apt-get install -y docker-ce python3-pip unzip wget
+          pip3 install docker-compose
+          # Get our code
+          wget https://github.com/crc-si/opendatacube-cloudformation-testing/archive/master.zip -O /tmp/archive.zip
+          unzip /tmp/archive.zip
+          mv  opendatacube-cloudformation-testing-master /opt/odc
+          # And get some data 
+          wget https://landsat.usgs.gov/sites/default/files/documents/wrs2_asc_desc.zip -O /opt/odc/data/wrs2_asc_desc.zip
+          # We need to remove some local vars. This is a bit of a hack...
+          sed --in-place '/AWS_/d' /opt/odc/docker-compose.yml
+          sed --in-place 's/secretpassword/${SecretPassword}/g' /opt/odc/docker-compose.yml
+          # We need write access in these places
+          chmod -R 777 /opt/odc/notebooks
+          chmod -R 777 /opt/odc/data
+          cd /opt/odc
+          # Start the machines
+          sudo docker-compose pull
+          sudo docker-compose up -d
+          # Wait for them to wake up
+          sleep 15
+          # Initialise and load a product, and then some data
+          docker-compose exec -T jupyter datacube -v system init
+          docker-compose exec -T jupyter datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml
+          docker-compose exec -T jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -p ''/opt/odc/data/wrs2_asc_desc.zip'' -e ${ExtentToIndex}"
       Tags:
         - Key:   "Name"
-          Value: "OpenDataCube Test1"
-    Metadata:
-      # see http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-init.html
-      AWS::CloudFormation::Init:
-        config:
-          files:
-            /home/ubuntu/install-software:
-              content: |
-                #!/bin/bash -eu
-                curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-                add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-                apt-get update
-                apt-get install -y docker-ce python3-pip unzip wget
-                pip3 install docker-compose
-
-              mode: '000700'
-              owner: ubuntu
-              group: ubuntu
-
-            /home/ubuntu/get-repo:
-              content: |
-                #!/bin/bash -eu
-                apt-get install
-                wget https://github.com/crc-si/opendatacube-cloudformation-testing/archive/master.zip -O /tmp/archive.zip
-                unzip /tmp/archive.zip
-                mv  opendatacube-cloudformation-testing-master /opt/odc-test
-
-              mode: '000700'
-              owner: ubuntu
-              group: ubuntu
-
-
-            /home/ubuntu/index-config:
-              content:
-                "extent":
-                  "Ref" : "ExtentToIndex"
-              mode: '000700'
-              owner: ubuntu
-              group: ubuntu
-
-          commands:
-            01-setup-opendatacube:
-              command: |
-                sh /home/ubuntu/install-software
-                sh /home/ubuntu/get-repo
-            02-run-opendatacube:
-              command: |
-                sudo docker-compose -f /opt/odc-test/docker-opendatacube/docker-compose.yml pull
-                sudo docker-compose -f /opt/odc-test/docker-opendatacube/docker-compose.yml up -d
+          Value: !Ref 'EC2InstanceName'
 
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -121,9 +92,49 @@ Resources:
         ToPort: '22'
         CidrIp: !Ref 'SSHLocation'
       - IpProtocol: tcp
+        FromPort: '80'
+        ToPort: '80'
+        CidrIp: !Ref 'SSHLocation'
+      - IpProtocol: tcp
         FromPort: '8888'
         ToPort: '8888'
         CidrIp: !Ref 'SSHLocation'
+
+  ODCRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - ec2.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+  RolePolicies:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: odc-policy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action: ["S3:ListBucket"]
+          Resource: ["arn:aws:s3:::landsat-pds"]
+        - Effect: Allow
+          Action: ["S3:GetObject"]
+          Resource: ["arn:aws:s3:::landsat-pds/*"]
+      Roles:
+      - !Ref ODCRole
+  ODCInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+      - !Ref ODCRole
+
 Outputs:
   InstanceId:
     Description: InstanceId of the newly created EC2 instance
