@@ -25,3 +25,5 @@ To deploy to AWS, you cam either do it on the command line, with the AWS command
 
 # IMPORTANT NOTES
 In your local environment, in order to be able to get data from S3, you need to ensure that the environment variables `ODC_ACCESS_KEY` and `ODC_SECRET_KEY` are set to something valid.
+
+This is a change for felix to review!
