@@ -61,7 +61,7 @@ Resources:
           unzip /tmp/archive.zip
           mv  opendatacube-cloudformation-testing-master /opt/odc
           # And get some data 
-          wget https://landsat.usgs.gov/sites/default/files/documents/wrs2_asc_desc.zip -O /opt/odc/data/wrs2_asc_desc.zip
+          wget https://landsat.usgs.gov/sites/default/files/documents/WRS2_descending.zip -O ./data/wrs2_descending.zip
           # We need to remove some local vars. This is a bit of a hack...
           sed --in-place '/AWS_/d' /opt/odc/docker-compose.yml
           sed --in-place 's/secretpassword/${SecretPassword}/g' /opt/odc/docker-compose.yml
@@ -77,7 +77,7 @@ Resources:
           # Initialise and load a product, and then some data
           docker-compose exec -T jupyter datacube -v system init
           docker-compose exec -T jupyter datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml
-          docker-compose exec -T jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -p ''/opt/odc/data/wrs2_asc_desc.zip'' -e ${ExtentToIndex}"
+          docker-compose exec -T jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -p ''/opt/odc/data/wrs2_descending.zip'' -e ${ExtentToIndex}"
       Tags:
         - Key:   "Name"
           Value: !Ref 'EC2InstanceName'
