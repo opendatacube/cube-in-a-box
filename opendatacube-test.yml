@@ -61,7 +61,7 @@ Resources:
           unzip /tmp/archive.zip
           mv  opendatacube-cloudformation-testing-master /opt/odc
           # And get some data 
-          wget https://landsat.usgs.gov/sites/default/files/documents/WRS2_descending.zip -O ./data/wrs2_descending.zip
+          wget https://landsat.usgs.gov/sites/default/files/documents/WRS2_descending.zip -O /opt/odc/data/wrs2_descending.zip
           # We need to remove some local vars. This is a bit of a hack...
           sed --in-place '/AWS_/d' /opt/odc/docker-compose.yml
           sed --in-place 's/secretpassword/${SecretPassword}/g' /opt/odc/docker-compose.yml
