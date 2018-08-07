@@ -12,7 +12,7 @@ def convert_ll_to_pr(extent, ascending, path):
     """ Convert lat, lon to pathrows """
     logger.info("Starting the conversion from ll to pathrow for area: {}".format(extent))
     driver = ogr.GetDriverByName('ESRI Shapefile')
-    file_path = '/vsizip/' + path + '/wrs2_asc_desc'
+    file_path = '/vsizip/' + path 
     dataSource = driver.Open(file_path, 0) # 0 means read-only. 1 means writeable.
     if not dataSource:
         logger.error("Failed to open the file: {}".format(file_path))
@@ -34,7 +34,6 @@ def convert_ll_to_pr(extent, ascending, path):
 
     if not ascending:
         layer.SetAttributeFilter("MODE = 'A'")
-
     else:
         layer.SetAttributeFilter("MODE = 'D'")
 
@@ -49,7 +48,7 @@ def convert_ll_to_pr(extent, ascending, path):
 # Probably should use Click like the other scripts? -agl
 @click.command()
 @click.option('--extents', '-e', default="146.30,146.83,-43.54,-43.20", help="Extent to index in the form lon_min,lon_max,lat_min,latmax")
-@click.option('--pathrow_file', '-p', default="/opt/odc/data/wrs2_asc_desc.zip", help="Absolute path to the pathrow file, e.g., /tmp/example.zip")
+@click.option('--pathrow_file', '-p', default="/opt/odc/data/wrs2_descending.zip", help="Absolute path to the pathrow file, e.g., /tmp/example.zip")
 def index(extents, pathrow_file, write_extents=True):
     lon_min, lon_max, lat_min, lat_max = map(float, extents.split(','))
 
@@ -64,6 +63,7 @@ def index(extents, pathrow_file, write_extents=True):
     logging.info("Found {} pathrows to handle".format((len(pathRows))))
     for pathRow in pathRows:
         logging.info("Loading pathrows")
+        print(pathRow)
         os.system('python3 ./ls_public_bucket.py landsat-pds -p c1/L8/' + "%03d" % (pathRow[0],) + '/' + "%03d" % (pathRow[1],) + '/')
 
 if __name__ == "__main__":

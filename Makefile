@@ -47,7 +47,7 @@ index:
 
 # Get the pathrows file
 download-pathrows-file:
-	wget https://landsat.usgs.gov/sites/default/files/documents/wrs2_asc_desc.zip -O ./data/wrs2_asc_desc.zip
+	wget https://landsat.usgs.gov/sites/default/files/documents/WRS2_descending.zip -O ./data/wrs2_descending.zip
 
 # Delete everything
 clear:
