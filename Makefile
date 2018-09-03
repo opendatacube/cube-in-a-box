@@ -41,7 +41,7 @@ index:
 
 	docker-compose exec jupyter bash -c \
 		"cd /opt/odc/scripts && python3 ./autoIndex.py \
-			-p '/opt/odc/data/wrs2_asc_desc.zip' \
+			-p '/opt/odc/data/wrs2_descending.zip' \
 			-e '146.30,146.83,-43.54,-43.20'"
 
 
