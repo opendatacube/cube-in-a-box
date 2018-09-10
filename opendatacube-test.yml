@@ -57,9 +57,9 @@ Resources:
           apt-get install -y docker-ce python3-pip unzip wget
           pip3 install docker-compose
           # Get our code
-          wget https://github.com/crc-si/opendatacube-cloudformation-testing/archive/master.zip -O /tmp/archive.zip
+          wget https://github.com/crc-si/cube-in-a-box/archive/master.zip -O /tmp/archive.zip
           unzip /tmp/archive.zip
-          mv  opendatacube-cloudformation-testing-master /opt/odc
+          mv   cube-in-a-box-master /opt/odc
           # And get some data 
           wget https://landsat.usgs.gov/sites/default/files/documents/WRS2_descending.zip -O /opt/odc/data/wrs2_descending.zip
           # We need to remove some local vars. This is a bit of a hack...
