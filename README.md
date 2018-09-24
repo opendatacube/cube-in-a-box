@@ -3,7 +3,7 @@ The Cube in a Box is a simple way to run the [OpenDataCube](https://opendatacube
  
 # Some notes:
  * Start a local environment using `make up` or `docker-compose up`
- * Set up your local postgres database (after the above has finished) using `make init-db` (or see the [Makefile](./Makefile) for the exact commands)
+ * Set up your local postgres database (after the above has finished) using `make initdb` (or see the [Makefile](./Makefile) for the exact commands)
  * Before indexing Landsat 8, you need to grab the pathrows index using `make download-pathrows-file`
  * Index a default region with `make index` 
     * Edit the Makefile to change the region of interest
