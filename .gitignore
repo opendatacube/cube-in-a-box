@@ -15,3 +15,4 @@ notebooks/.jupyter/
 notebooks/.local/
 notebooks/.bash_history
 notebooks/.python_history
+.env
