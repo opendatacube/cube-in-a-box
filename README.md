@@ -29,3 +29,6 @@ You need to be logged in to the AWS Console deploy using this URL. Once logged i
 
 # IMPORTANT NOTES
 In your local environment, in order to be able to get data from S3, you need to ensure that the environment variables `ODC_ACCESS_KEY` and `ODC_SECRET_KEY` are set to something valid.
+
+## Environment variables for Docker Compose
+Environment variables can be set in a .env file for Docker Compose. You might use [.env.example](./.env.example) as a starting point.
