@@ -1,13 +1,31 @@
 # Cube in a Box
-The Cube in a Box is a simple way to run the [OpenDataCube](https://opendatacube.com). This repository is a work in progress that 
+The Cube in a Box is a simple way to run the [OpenDataCube](https://opendatacube.com).
  
-# Some notes:
- * Start a local environment using `make up` or `docker-compose up`
- * Set up your local postgres database (after the above has finished) using `make initdb` (or see the [Makefile](./Makefile) for the exact commands)
+# How to use:
+_If you have `make` installed you can use it to save some typing using the instructions a little further down._
+
+All you need to know:
+ * Set environment variables for `ODC_ACCESS_KEY` and `ODC_SECRET_KEY` to something valid with your AWS account credentials.
+ * Start a local environment: `docker-compose up`
+ * Set up your local postgres database (after the above has finished) using:
+   * `docker-compose exec jupyter datacube -v system init`
+   * `docker-compose exec jupyter datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml`
+ * Before indexing Landsat 8, you need to grab the pathrows index. Download the file from [here](https://landsat.usgs.gov/sites/default/files/documents/WRS2_descending.zip) and save the zip file to `data/wrs2_descending.zip`
+ * Index a default region with:
+   * `docker-compose exec jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -p '/opt/odc/data/wrs2_descending.zip' -e '146.30,146.83,-43.54,-43.20'"`
+ * View the Jupyter notebook at [http://localhost](http://localhost) using the password `secretpassword`
+ * Shutdown your local environment:
+   * `docker-compose down`
+
+If you have `make`:
+ * Set environment variables for `ODC_ACCESS_KEY` and `ODC_SECRET_KEY` to something valid with your AWS account credentials.
+ * Start a local environment using `make up`
+ * Set up your local postgres database (after the above has finished) using `make initdb`
  * Before indexing Landsat 8, you need to grab the pathrows index using `make download-pathrows-file`
  * Index a default region with `make index` 
     * Edit the Makefile to change the region of interest
  * View the Jupyter notebook at [http://localhost](http://localhost) using the password `secretpassword`
+
 
 Todo:
  * Set up notebooks that work on indexed data
