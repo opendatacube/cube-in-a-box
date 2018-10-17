@@ -64,7 +64,7 @@ def index(extents, pathrow_file, write_extents=True):
     for pathRow in pathRows:
         logging.info("Loading pathrows")
         print(pathRow)
-        os.system('python3 ./ls_public_bucket.py landsat-pds -p c1/L8/' + "%03d" % (pathRow[0],) + '/' + "%03d" % (pathRow[1],) + '/')
+        os.system('python3 ./ls_public_bucket.py landsat-pds -p c1/L8/' + "%03d" % (pathRow[0],) + '/' + "%03d" % (pathRow[1],) + '/ --suffix="MTL.txt"' )
 
 if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
