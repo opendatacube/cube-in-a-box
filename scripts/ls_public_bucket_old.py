@@ -1,6 +1,5 @@
-
 # coding: utf-8
-from xml.etree import ElementTree
+# coding: utf-8
 from pathlib import Path
 import os
 from osgeo import osr
@@ -8,23 +7,13 @@ import dateutil
 from dateutil import parser
 from datetime import timedelta
 import uuid
-import yaml
 import logging
 import click
 import re
 import boto3
 import datacube
-from datacube.index.hl import Doc2Dataset
+from datacube.scripts.dataset import create_dataset, parse_match_rules_options
 from datacube.utils import changes
-from ruamel.yaml import YAML
-
-from multiprocessing import Process, current_process, Queue, Manager, cpu_count
-from time import sleep, time
-from queue import Empty
-
-GUARDIAN = "GUARDIAN_QUEUE_EMPTY"
-AWS_PDS_TXT_SUFFIX = "MTL.txt"
-
 
 MTL_PAIRS_RE = re.compile(r'(\w+)\s=\s(.*)')
 
@@ -176,123 +165,58 @@ def make_metadata_doc(mtl_data, bucket_name, object_key):
     return doc
 
 
-def format_obj_key(obj_key):
-    obj_key ='/'.join(obj_key.split("/")[:-1])
-    return obj_key
-
-
-def get_s3_url(bucket_name, obj_key):
-    return 's3://{bucket_name}/{obj_key}'.format(
-        bucket_name=bucket_name, obj_key=obj_key)
-
-
-def archive_document(doc, uri, index, sources_policy):
-    def get_ids(dataset):
-        ds = index.datasets.get(dataset.id, include_sources=True)
-        for source in ds.sources.values():
-            yield source.id
-        yield dataset.id
-
-    resolver = Doc2Dataset(index)
-    dataset, err  = resolver(doc, uri)
-    index.datasets.archive(get_ids(dataset))
-    logging.info("Archiving %s and all sources of %s", dataset.id, dataset.id)
-
-
-def add_dataset(doc, uri, index, sources_policy):
-    logging.info("Indexing %s", uri)
-    resolver = Doc2Dataset(index)
-    dataset, err  = resolver(doc, uri)
-    if err is not None:
-        logging.error("%s", err)
-    else:
-        try:
-            index.datasets.add(dataset, sources_policy=sources_policy) # Source policy to be checked in sentinel 2 datase types
-        except changes.DocumentMismatchError as e:
-            index.datasets.update(dataset, {tuple(): changes.allow_any})
-        except Exception as e:
-            err = e
-            logging.error("Unhandled exception %s", e)
-
-    return dataset, err
-
-def worker(config, bucket_name, prefix, suffix, func, unsafe, sources_policy, queue):
-    dc=datacube.Datacube(config=config)
-    index = dc.index
-    s3 = boto3.resource("s3")
-    safety = 'safe' if not unsafe else 'unsafe'
-
-    while True:
-        try:
-            key = queue.get(timeout=60)
-            if key == GUARDIAN:
-                break
-            logging.info("Processing %s %s", key, current_process())
-            obj = s3.Object(bucket_name, key).get(ResponseCacheControl='no-cache')
-            raw = obj['Body'].read()
-            if suffix == AWS_PDS_TXT_SUFFIX:
-                # Attempt to process text document
-                raw_string = raw.decode('utf8')
-                txt_doc = _parse_group(iter(raw_string.split("\n")))['L1_METADATA_FILE']
-                data = make_metadata_doc(txt_doc, bucket_name, key)
-            else:
-                yaml = YAML(typ=safety, pure=False)
-                yaml.default_flow_style = False
-                data = yaml.load(raw)
-            uri= get_s3_url(bucket_name, key)
-            logging.info("calling %s", func)
-            func(data, uri, index, sources_policy)
-            queue.task_done()
-        except Empty:
-            break
-        except EOFError:
-            break
-
-
-def iterate_datasets(bucket_name, config, prefix, suffix, func, unsafe, sources_policy):
-    manager = Manager()
-    queue = manager.Queue()
-
+def get_metadata_docs(bucket_name, prefix):
     s3 = boto3.resource('s3')
     bucket = s3.Bucket(bucket_name)
-    logging.info("Bucket : %s prefix: %s ", bucket_name, str(prefix))
-    safety = 'safe' if not unsafe else 'unsafe'
-    worker_count = cpu_count() * 2
-
-    processess = []
-    for i in range(worker_count):
-        proc = Process(target=worker, args=(config, bucket_name, prefix, suffix, func, unsafe, sources_policy, queue,))
-        processess.append(proc)
-        proc.start()
-
-    for obj in bucket.objects.filter(Prefix = str(prefix)):
-        if (obj.key.endswith(suffix)):
-            queue.put(obj.key)
-
-    for i in range(worker_count):
-        queue.put(GUARDIAN)
-
-    for proc in processess:
-        proc.join()
+    logging.info("Bucket : %s", bucket_name)
+    for obj in bucket.objects.filter(Prefix=prefix):
+        if obj.key.endswith('MTL.txt'):
+            obj_key = obj.key
+            logging.info("Processing %s", obj_key)
+            raw_string = obj.get()['Body'].read().decode('utf8')
+            mtl_doc = _parse_group(iter(raw_string.split("\n")))['L1_METADATA_FILE']
+            metadata_doc = make_metadata_doc(mtl_doc, bucket_name, obj_key)
+            yield obj_key, metadata_doc
 
 
+def make_rules(index):
+    all_product_names = [prod.name for prod in index.products.get_all()]
+    # Attempt to support old version of core API
+    try:
+        rules = parse_match_rules_options(index, None, all_product_names, True)
+    except TypeError:
+        rules = parse_match_rules_options(index, all_product_names, True) 
+    return rules
 
-@click.command(help= "Enter Bucket name. Optional to enter configuration file to access a different database")
+
+def add_dataset(doc, uri, rules, index):
+    dataset = create_dataset(doc, uri, rules)
+
+    try:
+        index.datasets.add(dataset, sources_policy='skip')
+    except changes.DocumentMismatchError as e:
+        index.datasets.update(dataset, {tuple(): changes.allow_any})
+    return uri
+
+
+def add_datacube_dataset(bucket_name, config, prefix):
+    dc = datacube.Datacube(config=config)
+    index = dc.index
+    rules = make_rules(index)
+    for metadata_path, metadata_doc in get_metadata_docs(bucket_name, prefix):
+        uri = get_s3_url(bucket_name, metadata_path)
+        add_dataset(metadata_doc, uri, rules, index)
+        logging.info("Indexing %s", metadata_path)
+
+
+@click.command(help="Enter Bucket name. Optional to enter configuration file to access a different database")
 @click.argument('bucket_name')
-@click.option('--config','-c',help=" Pass the configuration file to access the database",
-        type=click.Path(exists=True))
+@click.option('--config', '-c', help=" Pass the config file to access the database", type=click.Path(exists=True))
 @click.option('--prefix', '-p', help="Pass the prefix of the object to the bucket")
-@click.option('--suffix', '-s', default=".yaml", help="Defines the suffix of the metadata_docs that will be used to load datasets. For AWS PDS bucket use MTL.txt")
-@click.option('--archive', is_flag=True, help="If true, datasets found in the specified bucket and prefix will be archived")
-@click.option('--unsafe', is_flag=True, help="If true, YAML will be parsed unsafely. Only use on trusted datasets. Only valid if suffix is yaml")
-@click.option('--sources_policy', default="verify", help="verify, ensure, skip")
-def main(bucket_name, config, prefix, suffix, archive, unsafe, sources_policy):
+def main(bucket_name, config, prefix):
     logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
-    action = archive_document if archive else add_dataset
-    iterate_datasets(bucket_name, config, prefix, suffix, action, unsafe, sources_policy)
-   
+    add_datacube_dataset(bucket_name, config, prefix)
+
 
 if __name__ == "__main__":
     main()
-
-
