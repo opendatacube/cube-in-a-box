@@ -7,7 +7,8 @@ services:
       - POSTGRES_DB=opendatacube
       - POSTGRES_PASSWORD=opendatacubepassword
       - POSTGRES_USER=opendatacube
-
+    restart: always
+  
   jupyter:
     build: .
     environment:
@@ -23,5 +24,6 @@ services:
       - ./scripts:/opt/odc/scripts
       - ./data:/opt/odc/data
       - ./notebooks:/notebooks
+    restart: always
     shm_size: 1g
     command: jupyter notebook --allow-root --ip="0.0.0.0" --NotebookApp.token='secretpassword'
