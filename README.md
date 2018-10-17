@@ -11,8 +11,9 @@ All you need to know:
    * `docker-compose exec jupyter datacube -v system init`
    * `docker-compose exec jupyter datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml`
  * Before indexing Landsat 8, you need to grab the pathrows index. Download the file from [here](https://landsat.usgs.gov/sites/default/files/documents/WRS2_descending.zip) and save the zip file to `data/wrs2_descending.zip`
- * Index a default region with:
+ * Index a default region with either:
    * `docker-compose exec jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -p '/opt/odc/data/wrs2_descending.zip' -e '146.30,146.83,-43.54,-43.20'"`
+   * `docker-compose exec jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -p '/opt/odc/data/wrs2_descending.zip' -e '146.30,146.83,-43.54,-43.20' --start_date '2018-01-01' --end_date '2018-10-09'"`
  * View the Jupyter notebook at [http://localhost](http://localhost) using the password `secretpassword`
  * Shutdown your local environment:
    * `docker-compose down`
