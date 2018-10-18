@@ -50,3 +50,27 @@ In your local environment, in order to be able to get data from S3, you need to 
 
 ## Environment variables for Docker Compose
 Environment variables can be set in a .env file for Docker Compose. You might use [.env.example](./.env.example) as a starting point.
+
+## Detailed Docker Install Instructions
+If you are unfamiliar with Docker or Jupyter, this guide will take you through downloading Docker to setting up a Cube in a Box Jupyter Server. While these instructions specifically suit windows, the steps can easily be modified for other a different OS.
+
+First, [download Docker for Windows](https://docs.docker.com/docker-for-windows/install/).
+In Windows, we can use PowerShell to interact with the Docker command line. Please note, PowerShell ISE will not work.
+
+Next, download the Data Cube setup files and code from above and unzip into a local folder of your choice. Navigate PowerShell using the cd command, and the path to your folder.
+
+Follow [Docker's Orientation](https://docs.docker.com/get-started/) to familiarise yourself with Docker. At the end, you should be able to run `docker info` to view your installation details. These details can help troubleshoot a Docker installation.
+
+Now, we are going to create and run the Docker Container for our CIAB install. 
+You will need AWS access keys, please set them as environment variables as described above. In your folder containing the downloaded ODC files, enter the command `docker-compose up`. If your shell is not currently in the directory containing docker-compose.yml, the command will fail. You also need to use linux containers, not windows containers for your docker installation.
+If you receive an error “Drive has not been shared”, you will need to share your drive. Docker will prompt for this when it is required, but if you miss it, the setting is available under Settings > Shared Drives
+You should now see a variety of text outputs as the Docker Compose operates. Please note even if the final output reads “`No web browser found: could not locate runnable browser`”, the Jupyter notebooks are accessible via your local computer's browser.
+
+The Docker Jupyter instance is now running, and accessible in your computer’s web browser at: http://localhost/, the password is `secretpassword` and can be changed in docker-compose.yml. 
+Minimise the shell containing your running docker containers, then create a new shell instance by opening a new PowerShell window.
+
+Now we are able to access our Jupyter notebooks, we need to add some satellite data. The commands for these are show above, under "All you need to know:". These commands initialise the database, and index the [AWS LandSat-8 PDS Product](https://docs.opendata.aws/landsat-pds/readme.html). 
+The LandSat-8 product requires the USGS Pathrows file, available above. Finally, autoIndex.py is used to index a particular region of the global product, with the region definable by the coordinates listed after the command is called.
+Once the download finishes and the prompt returns, it is okay to return to the Jupyter notebooks, at http://localhost on your host machine. You should now see several notebook files, which can be run and examined.
+
+
