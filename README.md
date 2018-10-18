@@ -67,10 +67,9 @@ In Windows, we can use PowerShell to interact with the Docker command line. Plea
 * As shown above, we:
  * Set up your local postgres database: `docker-compose exec jupyter datacube -v system init`
  * [Add the Landsat 8 dataset](https://datacube-core.readthedocs.io/en/latest/ops/indexing.html#loading-product-definitions), you need to grab the pathrows index. Download the file from [here](https://landsat.usgs.gov/sites/default/files/documents/WRS2_descending.zip) and save the zip file to `data/wrs2_descending.zip`
-  * [_Index_](https://datacube-core.readthedocs.io/en/latest/ops/indexing.html#adding-data-indexing) the Landsat ls_usgs products: `docker-compose exec jupyter datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml`
- * Index a default region with:
-   * `docker-compose exec jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -p '/opt/odc/data/wrs2_descending.zip' -e '146.30,146.83,-43.54,-43.20'"`These commands initialise the database, and index the [AWS LandSat-8 PDS Product](https://docs.opendata.aws/landsat-pds/readme.html). 
-* The LandSat-8 product requires the USGS Pathrows file, available above. Finally, autoIndex.py is used to index a particular region of the global product, with the region definable by the coordinates listed after the command is called.
+  * Add the Landsat ls_usgs products: `docker-compose exec jupyter datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml`
+ * [_Index_](https://datacube-core.readthedocs.io/en/latest/ops/indexing.html#adding-data-indexing) a default region with:
+   * `docker-compose exec jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -p '/opt/odc/data/wrs2_descending.zip' -e '146.30,146.83,-43.54,-43.20'"`These commands initialise the database, and index the [AWS LandSat-8 PDS Product](https://docs.opendata.aws/landsat-pds/readme.html). autoIndex.py is used to index a particular region of the global product, with the region definable by the coordinates listed.
 * Once the download finishes and the prompt returns, it is okay to return to the Jupyter notebooks, at http://localhost on your host machine. You should now see several notebook files, which can be run and examined.
 
 
