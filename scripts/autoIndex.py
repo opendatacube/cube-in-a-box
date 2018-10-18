@@ -49,7 +49,9 @@ def convert_ll_to_pr(extent, ascending, path):
 @click.command()
 @click.option('--extents', '-e', default="146.30,146.83,-43.54,-43.20", help="Extent to index in the form lon_min,lon_max,lat_min,latmax")
 @click.option('--pathrow_file', '-p', default="/opt/odc/data/wrs2_descending.zip", help="Absolute path to the pathrow file, e.g., /tmp/example.zip")
-def index(extents, pathrow_file, write_extents=True):
+@click.option('--start_date', default="2013-02-11", help="Start date of the acquisitions to index, in YYYY-MM-DD format")
+@click.option('--end_date', default="2099-12-31", help="End date of the acquisitions to index, in YYYY-MM-DD format")
+def index(extents, pathrow_file, start_date, end_date, write_extents=True):
     lon_min, lon_max, lat_min, lat_max = map(float, extents.split(','))
 
     if write_extents:
@@ -64,7 +66,7 @@ def index(extents, pathrow_file, write_extents=True):
     for pathRow in pathRows:
         logging.info("Loading pathrows")
         print(pathRow)
-        os.system('python3 ./ls_public_bucket.py landsat-pds -p c1/L8/' + "%03d" % (pathRow[0],) + '/' + "%03d" % (pathRow[1],) + '/ --suffix="MTL.txt"' )
+        os.system('python3 ./ls_public_bucket.py landsat-pds -p c1/L8/' + "%03d" % (pathRow[0],) + '/' + "%03d" % (pathRow[1],) + '/ --suffix="MTL.txt"' + ' --start_date %s' % start_date + ' --end_date %s' % end_date)
 
 if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)

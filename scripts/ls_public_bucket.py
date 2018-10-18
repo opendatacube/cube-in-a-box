@@ -216,7 +216,7 @@ def add_dataset(doc, uri, index, sources_policy):
 
     return dataset, err
 
-def worker(config, bucket_name, prefix, suffix, func, unsafe, sources_policy, queue):
+def worker(config, bucket_name, prefix, suffix, start_date, end_date, func, unsafe, sources_policy, queue):
     dc=datacube.Datacube(config=config)
     index = dc.index
     s3 = boto3.resource("s3")
@@ -239,9 +239,12 @@ def worker(config, bucket_name, prefix, suffix, func, unsafe, sources_policy, qu
                 yaml = YAML(typ=safety, pure=False)
                 yaml.default_flow_style = False
                 data = yaml.load(raw)
-            uri= get_s3_url(bucket_name, key)
-            logging.info("calling %s", func)
-            func(data, uri, index, sources_policy)
+            uri = get_s3_url(bucket_name, key)
+            cdt = data['creation_dt']
+            # Use the fact lexicographical ordering matches the chronological ordering
+            if cdt >= start_date and cdt < end_date:
+                logging.info("calling %s", func)
+                func(data, uri, index, sources_policy)
             queue.task_done()
         except Empty:
             break
@@ -249,7 +252,7 @@ def worker(config, bucket_name, prefix, suffix, func, unsafe, sources_policy, qu
             break
 
 
-def iterate_datasets(bucket_name, config, prefix, suffix, func, unsafe, sources_policy):
+def iterate_datasets(bucket_name, config, prefix, suffix, start_date, end_date, func, unsafe, sources_policy):
     manager = Manager()
     queue = manager.Queue()
 
@@ -261,7 +264,7 @@ def iterate_datasets(bucket_name, config, prefix, suffix, func, unsafe, sources_
 
     processess = []
     for i in range(worker_count):
-        proc = Process(target=worker, args=(config, bucket_name, prefix, suffix, func, unsafe, sources_policy, queue,))
+        proc = Process(target=worker, args=(config, bucket_name, prefix, suffix, start_date, end_date, func, unsafe, sources_policy, queue,))
         processess.append(proc)
         proc.start()
 
@@ -279,17 +282,19 @@ def iterate_datasets(bucket_name, config, prefix, suffix, func, unsafe, sources_
 
 @click.command(help= "Enter Bucket name. Optional to enter configuration file to access a different database")
 @click.argument('bucket_name')
-@click.option('--config','-c',help=" Pass the configuration file to access the database",
+@click.option('--config','-c',help="Pass the configuration file to access the database",
         type=click.Path(exists=True))
 @click.option('--prefix', '-p', help="Pass the prefix of the object to the bucket")
 @click.option('--suffix', '-s', default=".yaml", help="Defines the suffix of the metadata_docs that will be used to load datasets. For AWS PDS bucket use MTL.txt")
+@click.option('--start_date', help="Pass the start acquisition date, in YYYY-MM-DD format")
+@click.option('--end_date', help="Pass the end acquisition date, in YYYY-MM-DD format")
 @click.option('--archive', is_flag=True, help="If true, datasets found in the specified bucket and prefix will be archived")
 @click.option('--unsafe', is_flag=True, help="If true, YAML will be parsed unsafely. Only use on trusted datasets. Only valid if suffix is yaml")
 @click.option('--sources_policy', default="verify", help="verify, ensure, skip")
-def main(bucket_name, config, prefix, suffix, archive, unsafe, sources_policy):
+def main(bucket_name, config, prefix, suffix, start_date, end_date, archive, unsafe, sources_policy):
     logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
     action = archive_document if archive else add_dataset
-    iterate_datasets(bucket_name, config, prefix, suffix, action, unsafe, sources_policy)
+    iterate_datasets(bucket_name, config, prefix, suffix, start_date, end_date, action, unsafe, sources_policy)
    
 
 if __name__ == "__main__":
