@@ -66,7 +66,7 @@ In Windows, we can use PowerShell to interact with the Docker command line. Plea
 * Minimise the shell containing your running docker containers, then create a new shell instance by opening a new PowerShell window.
 * As shown above, we:
   * Set up a local postgres database: `docker-compose exec jupyter datacube -v system init`
-  * [Add the Landsat 8 dataset](https://datacube-core.readthedocs.io/en/latest/ops/indexing.html#loading-product-definitions), you need to grab the pathrows index. Download the file from [here](https://landsat.usgs.gov/sites/default/files/documents/WRS2_descending.zip) and save the zip file to `data/wrs2_descending.zip`
+  * [Add the Landsat 8 dataset](https://datacube-core.readthedocs.io/en/latest/ops/indexing.html#loading-product-definitions), you need to grab the pathrows index. Download the file from [here](https://landsat.usgs.gov/sites/default/files/documents/WRS2_descending.zip) and save the zip file to `/data/wrs2_descending.zip` on your local machine. This folder is mounted within the Docker container, and can be used to share files between your host machine and the container.
    * Add the Landsat ls_usgs products: `docker-compose exec jupyter datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml`
    * [_Index_](https://datacube-core.readthedocs.io/en/latest/ops/indexing.html#adding-data-indexing) a default region with:
    * `docker-compose exec jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -p '/opt/odc/data/wrs2_descending.zip' -e '146.30,146.83,-43.54,-43.20'"`This commands indexes the [AWS LandSat-8 PDS Product](https://docs.opendata.aws/landsat-pds/readme.html). for a particular region of the global product, with the region definable by the coordinates listed.
