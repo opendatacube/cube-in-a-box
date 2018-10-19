@@ -107,16 +107,6 @@ def satellite_ref(sat):
     return sat_img
 
 
-def format_obj_key(obj_key):
-    obj_key = '/'.join(obj_key.split("/")[:-1])
-    return obj_key
-
-
-def get_s3_url(bucket_name, obj_key):
-    return 'http://{bucket_name}.s3.amazonaws.com/{obj_key}'.format(
-        bucket_name=bucket_name, obj_key=obj_key)
-
-
 def absolutify_paths(doc, bucket_name, obj_key):
     objt_key = format_obj_key(obj_key)
     for band in doc['image']['bands'].values():
@@ -259,7 +249,7 @@ def iterate_datasets(bucket_name, config, prefix, suffix, start_date, end_date, 
     s3 = boto3.resource('s3')
     bucket = s3.Bucket(bucket_name)
     logging.info("Bucket : %s prefix: %s ", bucket_name, str(prefix))
-    safety = 'safe' if not unsafe else 'unsafe'
+    # safety = 'safe' if not unsafe else 'unsafe'
     worker_count = cpu_count() * 2
 
     processess = []
