@@ -75,3 +75,11 @@ In Windows, we can use PowerShell to interact with the Docker command line. Plea
 If you want to make changes within the docker container, the underlying Linux terminal is accessible by executing `docker-compose exec jupyter bash` in PowerShell. This will start a terminal session within the container, where you can execute Linux commands to install additional packages, etc. 
 It is also possible to use [IPython Magic Commands](https://ipython.readthedocs.io/en/stable/interactive/magics.html) to execute some bash commands from within a Notebook. Use `%% Bash` at the top of a cell, and that cell will execute commands to the terminal. Not all commands work, however pip will function to install and update python packages.
 
+## Detailed Amazon Web Services (AWS) Install Instructions
+If you are unfamiliar with AWS, this detailed guide can help you set up an AWS account, and create the necessary AWS components using the provided template from the [Magic Link](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?stackName=cube-in-a-box&templateURL=https://s3-ap-southeast-2.amazonaws.com/cubeinabox/opendatacube-test.yml) as above.
+
+* First you will need an AWS account. While a 12 month free trail to several different AWS products is available, the computing power offered by the trial remote server is not enough to run demonstration ODC products. The cheapest option is currently a `t2.small` EC2 server, which will cost approximately $10 USD per month, if left running for the entire month.
+* Sign up for an [AWS account](https://portal.aws.amazon.com/billing/signup#/start).
+* The account that is created is known as a root account. It has access to every capability of AWS, including your billing information. * To follow recommended security practice, [you should first create an Administrator IAM user](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_create-admin-group.html) for you main log-in account, which limits only access to billing and other large adminsistrative policy changes.
+The procedure listed in the above link will take you through creating the Administrator account, and when done, you should [log in as the Administrator](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_how-users-sign-in.html).
+
