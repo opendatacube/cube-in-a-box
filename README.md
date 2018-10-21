@@ -93,7 +93,7 @@ If you are unfamiliar with AWS, this detailed guide can help you set up an AWS a
 
 * You are now ready to launch the [CIAB Magic URL](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?stackName=cube-in-a-box&templateURL=https://s3-ap-southeast-2.amazonaws.com/cubeinabox/opendatacube-test.yml), which navigates you to the CloudFormation Service, with a predefined template ready to launch.
 * The only detail you specifically need to select is the KeyName on page 2. Using the drop down, select the key name you specified earlier. 
-It is also recommened to change the SecretPassword, which will be used to log in to your Jupyter server. You may also choose a different EC2 Server type, with [costs listed here](https://aws.amazon.com/ec2/pricing/on-demand/). Please ensure US West (Oregon) is selected to get correct pricing.
+* It is also recommened to change the SecretPassword, which will be used to log in to your Jupyter server. You may also choose a different EC2 Server type, with [costs listed here](https://aws.amazon.com/ec2/pricing/on-demand/). Please ensure US West (Oregon) is selected to get correct pricing.
 * Finally on page 2, change the ExtentToIndex to a small (1 degree x 1 degree or less) demonstration area. It is easy to add different or larger extents after familiarising yourself with the Open Data Cube.
 * No other settings are required to be changed, so you may click through, acknowledge the IAM resources notificaton, and Create your resource Stack. 
 
