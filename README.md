@@ -70,7 +70,8 @@ In Windows, we can use PowerShell to interact with the Docker command line. Plea
    * [Add the Landsat ls_usgs _Product Definition_](https://datacube-core.readthedocs.io/en/latest/ops/indexing.html#product-definition): `docker-compose exec jupyter datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml`
    * [_Index_](https://datacube-core.readthedocs.io/en/latest/ops/indexing.html#adding-data-indexing) a default region with:
    * `docker-compose exec jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -p '/opt/odc/data/wrs2_descending.zip' -e '146.30,146.83,-43.54,-43.20'"`This commands indexes the [AWS LandSat-8 PDS Product](https://docs.opendata.aws/landsat-pds/readme.html). for a particular region of the global product, with the region definable by the coordinates listed.
-* Once the download finishes and the prompt returns, it is okay to return to the Jupyter notebooks, at http://localhost on your host machine. You should now see several notebook files, which can be run and examined.
+* Once the download finishes and the prompt returns, it is okay to return to the Jupyter notebooks, at http://localhost on your host machine.
+You should now see several notebook files, which can be run, editted and examined.
 
 If you want to make changes within the docker container, the underlying Linux terminal is accessible by executing `docker-compose exec jupyter bash` in PowerShell. This will start a terminal session within the container, where you can execute Linux commands to install additional packages, etc. 
 It is also possible to use [IPython Magic Commands](https://ipython.readthedocs.io/en/stable/interactive/magics.html) to execute some bash commands from within a Notebook. Use `%% Bash` at the top of a cell, and that cell will execute commands to the terminal. Not all commands work, however pip will function to install and update python packages.
@@ -92,4 +93,4 @@ If you are unfamiliar with AWS, this detailed guide can help you set up an AWS a
 * If these are successful, you will be taken to the Stack manager. Note the Filter “Active” option can be changed to see In Progress or Failed stacks.
 * Click on the “Outputs” tab to see the publicDNS of your EC2 server, which can be navigated to in your browser. This contains your Jupyter server. It may take a minute or two for Jupyter to prepare itself (no more than 5 minutes). Your password will be the secretpassword you set earlier, or simply `secretpassword`.
 
-You should now see several notebook files, which can be run and examined.
+You should now see several notebook files, which can be run, editted and examined.
