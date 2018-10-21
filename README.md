@@ -82,18 +82,23 @@ If you are unfamiliar with AWS, this detailed guide can help you set up an AWS a
 
 * First you will need an AWS account. While a 12 month free trail to several different AWS products is available, the computing power offered by the trial remote server is not enough to run demonstration ODC products. The cheapest option is currently a `t2.small` EC2 server, which will cost approximately $10 USD per month, if left running for the entire month.
 * Sign up for an [AWS account](https://portal.aws.amazon.com/billing/signup#/start). The account that is created is known as a root account. It has access to every capability of AWS, including your billing information.
-* To follow recommended security practice, [you should first create an Administrator IAM user](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_create-admin-group.html) for you main log-in account, which limits only access to billing and other large administrative policy changes. 
+* To follow recommended security practice, [you should first create an Administrator IAM user](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_create-admin-group.html) for your main log-in account, which limits only access to billing and other large administrative policy changes. 
 * The procedure listed in the above link will take you through creating the Administrator account, and when done, you should [log in as the Administrator](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_how-users-sign-in.html).
 
 * `It is now possible to begin testing CIAB immediately using the Administrator account. However, in a production ready environment, it would be best to create a second IAM account with access restricted to only the required functions of AWS. This part of the guide is a Work In Progress.`
 
 * To access your Cube in a Box, you will need a set of EC2 SSH keys. __Keys are region specific, so you must ensure your region when creating the CIAB is the same as the region used when creating the Keys.__ As the LS8 PDS is on US-West-2 Oregon, it is suggested you create your CIAB and keys on US-West-2 (Oregon) to facilitate fast loading of scenes. Change the region in the upper left dropdown.
+
 * Navigate to the EC2 service management page, and create a new Key Pair `https://us-west-2.console.aws.amazon.com/ec2/v2/home?region=us-west-2#KeyPairs`. The name of the key pair will be specified during the CIAB installation. Save the output .pem in a secure location.
 
 * You are now ready to launch the [CIAB Magic URL](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?stackName=cube-in-a-box&templateURL=https://s3-ap-southeast-2.amazonaws.com/cubeinabox/opendatacube-test.yml), which navigates you to the CloudFormation Service, with a predefined template ready to launch.
+
 * The only detail you specifically need to select is the KeyName on page 2. Using the drop down, select the key name you specified earlier. 
+
 * It is also recommended to change the SecretPassword, which will be used to log in to your Jupyter server. You may also choose a different EC2 Server type, with [costs listed here](https://aws.amazon.com/ec2/pricing/on-demand/). Please ensure US West (Oregon) is selected to get correct pricing.
+
 * Finally on page 2, change the ExtentToIndex to a small (1 degree x 1 degree or less) demonstration area. It is easy to add different or larger extents after familiarising yourself with the Open Data Cube.
+
 * No other settings are required to be changed, so you may click through, acknowledge the IAM resources notification, and Create your resource Stack. 
 
 * If these are successful, you will be taken to the Stack manager. Note the Filter “Active” option can be changed to see In Progress or Failed stacks.
