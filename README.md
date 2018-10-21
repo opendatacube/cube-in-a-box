@@ -86,7 +86,8 @@ If you are unfamiliar with AWS, this detailed guide can help you set up an AWS a
 * To follow recommended security practice, [you should first create an Administrator IAM user](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_create-admin-group.html) for you main log-in account, which limits only access to billing and other large adminsistrative policy changes. 
 * The procedure listed in the above link will take you through creating the Administrator account, and when done, you should [log in as the Administrator](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_how-users-sign-in.html).
 
-`Now, it is possible to begin testing CIAB immediately using the Administrator account. However, in a production ready environment, it would be best to create a second IAM account with access restricted to only the required functions of AWS. This part of the guide is a WIP.`
+* `It is now possible to begin testing CIAB immediately using the Administrator account. However, in a production ready environment, it would be best to create a second IAM account with access restricted to only the required functions of AWS. This part of the guide is a Work In Progress.`
+
 * To access your Cube in a Box, you will need a set of EC2 SSH keys. __Keys are region specific, so you must ensure your region when creating the CIAB is the same as the region used when creting the Keys.__ As the LS8 PDS is on US-West-2 Oregon, it is suggested you create your CIAB and keys on US-West-2 (Oregon) to faciliate fast loading of scenes. Change the region in the upper left dropdown.
 * Navigate to the EC2 service management page, and create a new Key Pair `https://us-west-2.console.aws.amazon.com/ec2/v2/home?region=us-west-2#KeyPairs`. The name of the key pair will be specified during the CIAB installation. Save the output .pem in a secure location.
 
@@ -96,7 +97,7 @@ It is also recommened to change the SecretPassword, which will be used to log in
 * Finally on page 2, change the ExtentToIndex to a small (1 degree x 1 degree or less) demonstration area. It is easy to add different or larger extents after familiarising yourself with the Open Data Cube.
 * No other settings are required to be changed, so you may click through, acknowledge the IAM resources notificaton, and Create your resource Stack. 
 
-If these are successful, you will be taken to the Stack manager. Note the Filter “Active” option can be changed to see In Progress or Failed stacks.
+* If these are successful, you will be taken to the Stack manager. Note the Filter “Active” option can be changed to see In Progress or Failed stacks.
 
 * Click on the “Outputs” tab to see the publicDNS of your EC2 server, which can be navigated to in your browser. This contains your Jupyter server. It may take a minute or two for Jupyter to prepare itself (no more than 5 minutes). Your password will the be the secretpassword you set earlier, or simply `secretpassword`.
 
