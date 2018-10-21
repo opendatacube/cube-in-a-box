@@ -26,12 +26,11 @@ If you have `make`:
     * Edit the Makefile to change the region of interest
  * View the Jupyter notebook at [http://localhost](http://localhost) using the password `secretpassword`
 
-
 To-do:
  * Set up notebooks that work on indexed data
 
 # Deploying to AWS:
-To deploy to AWS, you cam either do it on the command line, with the AWS command line installed or the magic URL below and the AWS console.
+To deploy to AWS, you can either do it on the command line, with the AWS command line installed or the magic URL below and the AWS console. Detailed instructions are [provided below](https://github.com/LSgeo/opendatacube-cloudformation-testing/blob/master/README.md#detailed-amazon-web-services-aws-install-instructions).
 
 Once deployed, if you navigate to the IP of the deployed instance, you can access Jupyter with the password you set in the parameters.json file or in the AWS UI if you used the magic URL.
 
@@ -46,7 +45,7 @@ You need to be logged in to the AWS Console deploy using this URL. Once logged i
  * If you want to change the stack, you can do `make update-infra` (although it may be cleaner to delete and re-create the stack)
 
 # IMPORTANT NOTES
-In your local environment, in order to be able to get data from S3, you need to ensure that the environment variables `ODC_ACCESS_KEY` and `ODC_SECRET_KEY` are set to something valid.
+In your local environment, in order to be able to get data from S3, you need to ensure that the environment variables `ODC_ACCESS_KEY` and `ODC_SECRET_KEY` are set to something valid. If using AWS, these parameters are automatically included.
 
 ## Environment variables for Docker Compose
 Environment variables can be set in a .env file for Docker Compose. You might use [.env.example](./.env.example) as a starting point.
