@@ -1,4 +1,3 @@
-
 # Detailed Install Instructions
 ## Detailed Docker Install Instructions
 If you are unfamiliar with Docker or Jupyter, this guide will take you through downloading Docker to setting up a Cube in a Box Jupyter Server running the Open Data Cube. While these instructions specifically suit windows, the steps can easily be adapted for other a different OS, using a Terminal instead of PowerShell, and the appropriate Docker version.
