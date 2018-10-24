@@ -31,7 +31,7 @@ To-do:
  * Set up notebooks that work on indexed data
 
 # Deploying to AWS:
-To deploy to AWS, you can either do it on the command line, with the AWS command line installed or the magic URL below and the AWS console. Detailed instructions are [provided below](https://github.com/LSgeo/opendatacube-cloudformation-testing/blob/master/README.md#detailed-amazon-web-services-aws-install-instructions).
+To deploy to AWS, you can either do it on the command line, with the AWS command line installed or the magic URL below and the AWS console. Detailed instructions are [available](docs/Detailed_Install.md).
 
 Once deployed, if you navigate to the IP of the deployed instance, you can access Jupyter with the password you set in the parameters.json file or in the AWS UI if you used the magic URL.
 
