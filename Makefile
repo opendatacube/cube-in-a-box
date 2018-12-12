@@ -33,7 +33,7 @@ index-landsat:
 	docker-compose exec jupyter bash -c \
 		"cd /opt/odc/scripts && python3 ./ls_public_bucket.py frontiersi-odc-test \
 		-p firstcog \
-		--suffix=".xml" \
+		--suffix="T1.xml" \
 		--start_date 2013-01-01 --end_date 2020-01-01"
 
 check-landsat:

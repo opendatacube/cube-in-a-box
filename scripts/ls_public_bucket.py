@@ -25,51 +25,77 @@ from queue import Empty
 
 GUARDIAN = "GUARDIAN_QUEUE_EMPTY"
 AWS_PDS_TXT_SUFFIX = "MTL.txt"
-LANDSAT_XML_SUFFIX = '.xml'
+LANDSAT_XML_SUFFIX = 'T1.xml'
 
 
 MTL_PAIRS_RE = re.compile(r'(\w+)\s=\s(.*)')
 
-bands_ls8 = [('1', 'coastal_aerosol'),
-             ('2', 'blue'),
-             ('3', 'green'),
-             ('4', 'red'),
-             ('5', 'nir'),
-             ('6', 'swir1'),
-             ('7', 'swir2'),
-             ('8', 'panchromatic'),
-             ('9', 'cirrus'),
-             ('10', 'lwir1'),
-             ('11', 'lwir2'),
-             ('QUALITY', 'quality')]
+bands_ls8 = [
+    ('1', 'coastal_aerosol'),
+    ('2', 'blue'),
+    ('3', 'green'),
+    ('4', 'red'),
+    ('5', 'nir'),
+    ('6', 'swir1'),
+    ('7', 'swir2'),
+    ('8', 'panchromatic'),
+    ('9', 'cirrus'),
+    ('10', 'lwir1'),
+    ('11', 'lwir2'),
+    ('QUALITY', 'quality')
+]
 
-bands_ls7 = [('1', 'blue'),
-             ('2', 'green'),
-             ('3', 'red'),
-             ('4', 'nir'),
-             ('5', 'swir1'),
-             ('7', 'swir2'),
-             ('QUALITY', 'quality')]
+bands_ls7 = [
+    ('1', 'blue'),
+    ('2', 'green'),
+    ('3', 'red'),
+    ('4', 'nir'),
+    ('5', 'swir1'),
+    ('7', 'swir2'),
+    ('QUALITY', 'quality')
+]
 
-bands_ls8_usard = [('1', 'coastal_aerosol'),
-             ('2', 'blue'),
-             ('3', 'green'),
-             ('4', 'red'),
-             ('5', 'nir'),
-             ('6', 'swir1'),
-             ('7', 'swir2'),
-             ('9', 'pixel_qa')]
+bands_ls57_usard = [
+    ('1', 'blue'),
+    ('2', 'green'),
+    ('3', 'red'),
+    ('4', 'nir'),
+    ('5', 'swir1'),
+    ('7', 'swir2'),
+    ('8', 'cloud_qa')
+]
 
-band_file_map = {
-                  'coastal_aerosol' : 'sr_band1',
-                  'blue' : 'sr_band2',
-                  'green' : 'sr_band3',
-                  'red' : 'sr_band4',
-                  'nir' : 'sr_band5',
-                  'swir1' : 'sr_band6',
-                  'swir2' : 'sr_band7',
-                  'pixel_qa' : 'pixel_qa',
-                }
+bands_ls8_usard = [
+    ('1', 'coastal_aerosol'),
+    ('2', 'blue'),
+    ('3', 'green'),
+    ('4', 'red'),
+    ('5', 'nir'),
+    ('6', 'swir1'),
+    ('7', 'swir2'),
+    ('8', 'pixel_qa')
+]
+
+band_file_map_l57 = {
+    'blue': 'sr_band1',
+    'green': 'sr_band2',
+    'red': 'sr_band3',
+    'nir': 'sr_band4',
+    'swir1': 'sr_band5',
+    'swir2': 'sr_band7',
+    'cloud_qa': 'cloud_qa'
+}
+
+band_file_map_l8 = {
+    'coastal_aerosol': 'sr_band1',
+    'blue': 'sr_band2',
+    'green': 'sr_band3',
+    'red': 'sr_band4',
+    'nir': 'sr_band5',
+    'swir1': 'sr_band6',
+    'swir2': 'sr_band7',
+    'pixel_qa': 'pixel_qa'
+}
 
 
 def _parse_value(s):
@@ -133,10 +159,14 @@ def satellite_ref(sat):
     To load the band_names for referencing either LANDSAT8 or LANDSAT7 bands
     """
     if sat == 'LANDSAT_8':
-        # sat_img = bands_ls8
-        sat_img = bands_ls8_usard
-    elif sat == 'LANDSAT_7' or sat == 'LANDSAT_5':
+        sat_img = bands_ls8
+    elif sat in ('LANDSAT_7', 'LANDSAT_5'):
         sat_img = bands_ls7
+    elif sat in ('USGS/EROS/LANDSAT_7', 'USGS/EROS/LANDSAT_5'):
+        sat_img = bands_ls57_usard
+    elif sat == 'USGS/EROS/LANDSAT_8':
+        print("We're working with the USGS supplied landsat.")
+        sat_img = bands_ls8_usard
     else:
         raise ValueError('Satellite data Not Supported')
     return sat_img
@@ -158,7 +188,7 @@ def make_xml_doc(xmlstring, bucket_name, object_key):
     doc = ElementTree.fromstring(xmlstring)
 
     satellite = doc.find('.//satellite').text
-    # print("Satellite is: {}".format(satellite))
+    data_provider = doc.find('.//data_provider').text
     instrument = 'OLI_TIRS'
 
     # other params like cloud_shadow, snow_ice, tile_grid, orientation_angle are also available
@@ -169,8 +199,13 @@ def make_xml_doc(xmlstring, bucket_name, object_key):
     level = doc.find('.//product_id').text.split('_')[1]
     start_time = center_dt
     end_time = center_dt
-    # print(satellite_ref(satellite))
-    images = satellite_ref(satellite)
+
+    satellite_string = "{}/{}".format(data_provider, satellite)
+    images = satellite_ref(satellite_string)
+    if satellite_string == 'USGS/EROS/LANDSAT_8':
+        band_file_map = band_file_map_l8
+    else:
+        band_file_map = band_file_map_l57
 
     # cs_code = '5072'
     utm_zone = doc.find('.//projection_information/utm_proj_params/zone_code').text
