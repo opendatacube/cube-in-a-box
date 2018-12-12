@@ -25,6 +25,22 @@ index:
 			-p '/opt/odc/data/wrs2_descending.zip' \
 			-e '146.30,146.83,-43.54,-43.20'"
 
+product-landsat:
+	docker-compose exec jupyter bash -c \
+		"cd /opt/odc/scripts/lcmap && datacube product add product_definition/product_definition_USARD_L8_V2.yaml"
+
+index-landsat:
+	docker-compose exec jupyter bash -c \
+		"cd /opt/odc/scripts && python3 ./ls_public_bucket.py frontiersi-odc-test \
+		-p firstcog \
+		--suffix=".xml" \
+		--start_date 2013-01-01 --end_date 2020-01-01"
+
+check-landsat:
+	docker-compose exec jupyter bash -c \
+		datacube product list \
+		&& datacube dataset search product ='landsat_8_USARD' |grep id |wc -l
+
 # Some extra commands to help in managing things.
 # Rebuild the image
 build:
