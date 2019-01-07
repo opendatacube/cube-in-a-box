@@ -62,7 +62,7 @@ bands_ls57_usard = [
     ('4', 'nir'),
     ('5', 'swir1'),
     ('7', 'swir2'),
-    ('8', 'cloud_qa')
+    ('8', 'pixel_qa')
 ]
 
 bands_ls8_usard = [
@@ -83,11 +83,11 @@ band_file_map_l57 = {
     'nir': 'sr_band4',
     'swir1': 'sr_band5',
     'swir2': 'sr_band7',
-    'cloud_qa': 'cloud_qa'
+    'pixel_qa': 'sr_cloud_qa'
 }
 
 band_file_map_l8 = {
-    'coastal_aerosol': 'sr_band1',
+    'coastal_aerosol': 'sr_aerosol',
     'blue': 'sr_band2',
     'green': 'sr_band3',
     'red': 'sr_band4',
@@ -163,9 +163,10 @@ def satellite_ref(sat):
     elif sat in ('LANDSAT_7', 'LANDSAT_5'):
         sat_img = bands_ls7
     elif sat in ('USGS/EROS/LANDSAT_7', 'USGS/EROS/LANDSAT_5'):
+        # logging.info("We're working with the USGS supplied landsat 5 or 7.")
         sat_img = bands_ls57_usard
     elif sat == 'USGS/EROS/LANDSAT_8':
-        print("We're working with the USGS supplied landsat.")
+        # logging.info("We're working with the USGS supplied landsat 8.")
         sat_img = bands_ls8_usard
     else:
         raise ValueError('Satellite data Not Supported')
@@ -189,7 +190,7 @@ def make_xml_doc(xmlstring, bucket_name, object_key):
 
     satellite = doc.find('.//satellite').text
     data_provider = doc.find('.//data_provider').text
-    instrument = 'OLI_TIRS'
+    instrument = doc.find('.//instrument').text
 
     # other params like cloud_shadow, snow_ice, tile_grid, orientation_angle are also available
 
@@ -206,6 +207,8 @@ def make_xml_doc(xmlstring, bucket_name, object_key):
         band_file_map = band_file_map_l8
     else:
         band_file_map = band_file_map_l57
+    
+    logging.info("Working on data for satellite: {}".format(satellite_string))
 
     # cs_code = '5072'
     utm_zone = doc.find('.//projection_information/utm_proj_params/zone_code').text
@@ -258,43 +261,48 @@ def make_xml_doc(xmlstring, bucket_name, object_key):
               'y': southyf}}
 
     band_dict =  get_band_filenames(doc)
-    docdict = {
-        'id': str(uuid.uuid4()),
-        # 'cloud_cover': cloud_cover,
-        # 'fill': fill,
-        'processing_level': str(level),
-        # This is hardcoded now... needs to be not hardcoded!
-        'product_type': 'USARD',
-        'creation_dt': acquisition_date,
-        'platform': {'code': satellite},
-        'instrument': {'name': instrument},
-        'extent': {
-            'from_dt': str(start_time),
-            'to_dt': str(end_time),
-            'center_dt': str(center_dt),
-            'coord': coord,
-        },
-        'format': {'name': 'GeoTiff'},
-        'grid_spatial': {
-            'projection': {
-                'geo_ref_points': geo_ref_points,
-                'spatial_reference': spatial_ref,
-            }
-        },
-        'image': {
-            'bands': {
-                image[1]: {
-                    'path': band_dict[band_file_map[image[1]]],
-                    'layer': 1,
-                } for image in images
-            }
-        },
+    try:
+        docdict = {
+            'id': str(uuid.uuid5(uuid.NAMESPACE_URL, get_s3_url(bucket_name, object_key))),
+            # 'cloud_cover': cloud_cover,
+            # 'fill': fill,
+            'processing_level': str(level),
+            # This is hardcoded now... needs to be not hardcoded!
+            'product_type': 'USARD',
+            'creation_dt': acquisition_date,
+            'platform': {'code': satellite},
+            'instrument': {'name': instrument},
+            'extent': {
+                'from_dt': str(start_time),
+                'to_dt': str(end_time),
+                'center_dt': str(center_dt),
+                'coord': coord,
+            },
+            'format': {'name': 'GeoTiff'},
+            'grid_spatial': {
+                'projection': {
+                    'geo_ref_points': geo_ref_points,
+                    'spatial_reference': spatial_ref,
+                }
+            },
+            'image': {
+                'bands': {
+                    image[1]: {
+                        'path': band_dict[band_file_map[image[1]]],
+                        'layer': 1,
+                    } for image in images
+                }
+            },
 
-        'lineage': {'source_datasets': {}}
-    }
+            'lineage': {'source_datasets': {}}
+        }
+    except KeyError as e:
+        logging.error("Failed to handle metadata file: {} with error: {}".format(object_key, e))
+        return None
     docdict = absolutify_paths(docdict, bucket_name, object_key)
 
-    print(json.dumps(docdict, indent=2))
+    logging.info("Prepared docdict for metadata file: {}".format(object_key))
+    # print(json.dumps(docdict, indent=2))
 
     return docdict
 
@@ -418,20 +426,29 @@ def worker(config, bucket_name, prefix, suffix, start_date, end_date, func, unsa
                 yaml = YAML(typ=safety, pure=False)
                 yaml.default_flow_style = False
                 data = yaml.load(raw)
-            uri = get_s3_url(bucket_name, key)
-            cdt = data['creation_dt']
-            # Use the fact lexicographical ordering matches the chronological ordering
-            if cdt >= start_date and cdt < end_date:
-                # logging.info("calling %s", func)
-                func(data, uri, index, sources_policy)
-            queue.task_done()
+            if data:
+                uri = get_s3_url(bucket_name, key)
+                cdt = data['creation_dt']
+                # Use the fact lexicographical ordering matches the chronological ordering
+                if cdt >= start_date and cdt < end_date:
+                    # logging.info("calling %s", func)
+                    func(data, uri, index, sources_policy)
+            else:
+                logging.error("Failed to get data returned... skipping file.")
         except Empty:
+            logging.error("Empty exception hit.")
             break
         except EOFError:
+            logging.error("EOF Error hit.")
             break
+        except ValueError:
+            logging.error("Found data for a satellite that we can't handle.")
+        finally:
+            queue.task_done()
 
 
 def iterate_datasets(bucket_name, config, prefix, suffix, start_date, end_date, func, unsafe, sources_policy):
+    logging.info("Starting iterate datasets.")
     manager = Manager()
     queue = manager.Queue()
 
@@ -447,9 +464,13 @@ def iterate_datasets(bucket_name, config, prefix, suffix, start_date, end_date, 
         processess.append(proc)
         proc.start()
 
+    count = 0
     for obj in bucket.objects.filter(Prefix = str(prefix)):
         if (obj.key.endswith(suffix)):
+            count += 1
             queue.put(obj.key)
+    
+    logging.info("Found {} items to investigate".format(count))
 
     for i in range(worker_count):
         queue.put(GUARDIAN)

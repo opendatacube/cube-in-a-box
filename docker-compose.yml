@@ -7,6 +7,8 @@ services:
       - POSTGRES_DB=opendatacube
       - POSTGRES_PASSWORD=opendatacubepassword
       - POSTGRES_USER=opendatacube
+    ports:
+      - 5432:5432
     restart: always
   
   jupyter:

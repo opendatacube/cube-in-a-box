@@ -26,15 +26,19 @@ index:
 			-e '146.30,146.83,-43.54,-43.20'"
 
 product-landsat:
-	docker-compose exec jupyter bash -c \
-		"cd /opt/odc/scripts/lcmap && datacube product add product_definition/product_definition_USARD_L8_V2.yaml"
+	docker-compose exec jupyter \
+		datacube product add /opt/odc/scripts/product_definitions/product_definition_USARD_L5.yaml
+	docker-compose exec jupyter \
+		datacube product add /opt/odc/scripts/product_definitions/product_definition_USARD_L7.yaml
+	docker-compose exec jupyter \
+		datacube product add /opt/odc/scripts/product_definitions/product_definition_USARD_L8.yaml
 
 index-landsat:
 	docker-compose exec jupyter bash -c \
 		"cd /opt/odc/scripts && python3 ./ls_public_bucket.py frontiersi-odc-test \
-		-p firstcog \
+		-p test/LANDSAT_8 \
 		--suffix="T1.xml" \
-		--start_date 2013-01-01 --end_date 2020-01-01"
+		--start_date 1980-01-01 --end_date 2020-01-01"
 
 check-landsat:
 	docker-compose exec jupyter bash -c \

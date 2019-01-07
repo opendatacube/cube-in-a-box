@@ -1,0 +1,113 @@
+name: landsat_5_USARD
+description: Landsat 5 US/ARD Product Definition
+metadata_type: eo
+
+metadata:
+    platform:
+        code: LANDSAT_5
+    instrument:
+        name: TM
+    product_type: USARD
+    format:
+        name: GeoTiff
+measurements:
+    - name: 'blue'
+      aliases: [band_1, blue]
+      dtype: int16
+      nodata: -9999
+      units: '1'
+
+    - name: 'green'
+      aliases: [band_2, green]
+      dtype: int16
+      nodata: -9999
+      units: '1'
+
+    - name: 'red'
+      aliases: [band_3, red]
+      dtype: int16
+      nodata: -9999
+      units: '1'
+
+    - name: 'nir'
+      aliases: [band_4, nir]
+      dtype: int16
+      nodata: -9999
+      units: '1'
+
+    - name: 'swir1'
+      aliases: [band_5, swir1]
+      dtype: int16
+      nodata: -9999
+      units: '1'
+
+    # - name: 'therm'
+    #   aliases: [btb6, therm]
+    #   dtype: int16
+    #   nodata: -9999
+    #   units: '1'
+
+    - name: 'swir2'
+      aliases: [band_7, swir2]
+      dtype: int16
+      nodata: -9999
+      units: '1'
+
+    - name: 'pixel_qa'
+      aliases: [PIXELQA, pixel_qa]
+      dtype: int16
+      nodata: 0
+      units: '1'
+      flags_definition:
+        designated_fill:
+          bits: [0]
+          description: Used to identify fill values
+          values: {0: false, 1: true}
+        terrain_occlusion:
+          bits: [1]
+          description: Terrain Occlusion
+          values: {0: false, 1: true}
+        radiometric_saturation:
+          bits: [2,3]
+          description: Radiometric saturation bits, represents how many bands contains saturation
+          values:
+            0: none
+            1: 1-2
+            2: 3-4
+            3: <=5
+        cloud:
+          bits: [4]
+          description: Cloud
+          values: {0: false, 1: true}
+        cloud_confidence:
+          bits: [5,6]
+          description: Cloud Confidence with low =(0-33)%, medium =(34-66)% and high =(67-100)%
+          values:
+            0: Not Determined
+            1: Low
+            2: Medium
+            3: High
+        cloud_shadow_conf:
+          bits: [7,8]
+          description: Cloud Shadow Confidence with low =(0-33)%, medium =(34-66)% and high =(67-100)%
+          values:
+            0: Not Determined
+            1: Low
+            2: Medium
+            3: High
+        snow_ice_conf:
+          bits: [9,10]
+          description: Snow/Ice Confidence with low =(0-33)%, medium =(34-66)% and high =(67-100)%
+          values:
+            0: Not Determined
+            1: Low
+            2: Medium
+            3: High
+        cirrus_confidence:
+          bits: [11,12]
+          description: Cirrus Confidence with low =(0-33)%, medium =(34-66)% and high =(67-100)%
+          values:
+            0: Not Determined
+            1: Low
+            2: Medium
+            3: High
