@@ -33,10 +33,14 @@ product-landsat:
 	docker-compose exec jupyter \
 		datacube product add /opt/odc/scripts/product_definitions/product_definition_USARD_L8.yaml
 
+new-product-landsat:
+	docker-compose exec jupyter \
+		datacube product add /opt/odc/scripts/product_definitions/ls_usgs_sr_scene.yaml
+
 index-landsat:
 	docker-compose exec jupyter bash -c \
 		"cd /opt/odc/scripts && python3 ./ls_public_bucket.py frontiersi-odc-test \
-		-p test/LANDSAT_8 \
+		-p test \
 		--suffix="T1.xml" \
 		--start_date 1980-01-01 --end_date 2020-01-01"
 

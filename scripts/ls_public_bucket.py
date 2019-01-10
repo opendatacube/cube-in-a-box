@@ -61,8 +61,11 @@ bands_ls57_usard = [
     ('3', 'red'),
     ('4', 'nir'),
     ('5', 'swir1'),
-    ('7', 'swir2'),
-    ('8', 'pixel_qa')
+    ('6', 'swir2'),
+    ('7', 'sr_atmos_opacity'),
+    ('8', 'pixel_qa'),
+    ('9', 'radsat_qa'),
+    ('10', 'sr_cloud_qa')
 ]
 
 bands_ls8_usard = [
@@ -73,7 +76,9 @@ bands_ls8_usard = [
     ('5', 'nir'),
     ('6', 'swir1'),
     ('7', 'swir2'),
-    ('8', 'pixel_qa')
+    ('8', 'pixel_qa'),
+    ('9', 'sr_aerosol'),
+    ('10', 'radsat_qa')
 ]
 
 band_file_map_l57 = {
@@ -83,18 +88,23 @@ band_file_map_l57 = {
     'nir': 'sr_band4',
     'swir1': 'sr_band5',
     'swir2': 'sr_band7',
-    'pixel_qa': 'sr_cloud_qa'
+    'pixel_qa': 'pixel_qa',
+    'radsat_qa': 'radsat_qa',
+    'sr_cloud_qa': 'sr_cloud_qa',
+    'sr_atmos_opacity': 'sr_atmos_opacity'
 }
 
 band_file_map_l8 = {
-    'coastal_aerosol': 'sr_aerosol',
+    'coastal_aerosol': 'sr_band1',
     'blue': 'sr_band2',
     'green': 'sr_band3',
     'red': 'sr_band4',
     'nir': 'sr_band5',
     'swir1': 'sr_band6',
     'swir2': 'sr_band7',
-    'pixel_qa': 'pixel_qa'
+    'pixel_qa': 'pixel_qa',
+    'radsat_qa': 'radsat_qa',
+    'sr_aerosol': 'sr_aerosol'
 }
 
 
