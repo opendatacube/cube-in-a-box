@@ -10,7 +10,8 @@ services:
     restart: always
 
   dask-scheduler:
-    image: opendatacube/dask
+    build:
+      context: dask
     environment:
       - POSTGRES_DB=opendatacube
       - POSTGRES_PASSWORD=opendatacubepassword
@@ -23,7 +24,8 @@ services:
     command: ["dask-scheduler"]
 
   dask-worker:
-    image: opendatacube/dask
+    build:
+      context: dask
     environment:
       - POSTGRES_DB=opendatacube
       - POSTGRES_PASSWORD=opendatacubepassword
@@ -43,6 +45,8 @@ services:
       - AWS_SECRET_ACCESS_KEY=${ODC_SECRET_KEY}
     ports:
       - "80:8888"
+      - "7777:8786"
+      - "6666:8787"
     volumes:
       - ./scripts:/opt/odc/scripts
       - ./data:/opt/odc/data
