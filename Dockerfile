@@ -2,7 +2,9 @@ FROM opendatacube/jupyter
 
 USER root
 
-RUN pip3 install matplotlib click scikit-image pep8 ruamel.yaml dask distributed
+RUN apt-get -y update && apt-get install -y graphviz
+
+RUN pip3 install matplotlib click scikit-image pep8 ruamel.yaml dask distributed graphviz
 
 USER $NB_UID
 
