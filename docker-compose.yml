@@ -32,7 +32,7 @@ services:
       - POSTGRES_USER=opendatacube
       - AWS_ACCESS_KEY_ID=${ODC_ACCESS_KEY}
       - AWS_SECRET_ACCESS_KEY=${ODC_SECRET_KEY}
-    command: ["dask-worker", "tcp://dask-scheduler:8786"]
+    command: ["dask-worker", "--nprocs", "1", "--nthreads", "1", "tcp://dask-scheduler:8786"]
   
   jupyter:
     build: .
@@ -44,7 +44,7 @@ services:
       - AWS_ACCESS_KEY_ID=${ODC_ACCESS_KEY}
       - AWS_SECRET_ACCESS_KEY=${ODC_SECRET_KEY}
     ports:
-      - "80:8888"
+      - "8888:8888"
       - "7777:8786"
       - "6666:8787"
     volumes:
