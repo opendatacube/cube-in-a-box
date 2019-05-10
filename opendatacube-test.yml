@@ -45,9 +45,9 @@ Parameters:
 Mappings: 
   RegionMap: 
     us-west-2:
-      "HVM64": "ami-0e32ec5bc225539f5"
+      "HVM64": "ami-04ef7170e45541f07"
     ap-southeast-2:
-      "HVM64": "ami-0789a5fb42dcccc10"
+      "HVM64": "ami-033c54f661460cfd2"
 Resources:
   EC2Instance:
     Type: AWS::EC2::Instance
