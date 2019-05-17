@@ -7,9 +7,9 @@ metadata:
         code: LANDSAT_8
     instrument:
         name: OLI_TIRS
-    product_type: USARD
+    product_type: LEVEL2_USGS
     format:
-        name: GeoTiff
+        name: GeoTIFF
 
 measurements:
     - name: 'coastal_aerosol'
@@ -174,9 +174,9 @@ metadata:
         code: LANDSAT_7
     instrument:
         name: ETM
-    product_type: USARD
+    product_type: LEVEL2_USGS
     format:
-        name: GeoTiff
+        name: GeoTIFF
 
 measurements:
     - name: 'blue'
@@ -337,9 +337,9 @@ metadata:
         code: LANDSAT_5
     instrument:
         name: TM
-    product_type: USARD
+    product_type: LEVEL2_USGS
     format:
-        name: GeoTiff
+        name: GeoTIFF
 
 measurements:
     - name: 'blue'

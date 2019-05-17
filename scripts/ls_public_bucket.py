@@ -229,6 +229,12 @@ def make_xml_doc(xmlstring, bucket_name, object_key):
     north = doc.find('.//bounding_coordinates/north').text
     south = doc.find('.//bounding_coordinates/south').text
 
+    if float(west) < -179:
+        west = str(float(west) + 360)
+
+    if float(east) < -179:
+        east = str(float(east) + 360)
+
     coord = {
           'ul':
              {'lon': west,
@@ -279,7 +285,7 @@ def make_xml_doc(xmlstring, bucket_name, object_key):
             # 'fill': fill,
             'processing_level': str(level),
             # This is hardcoded now... needs to be not hardcoded!
-            'product_type': 'USARD',
+            'product_type': 'LEVEL2_USGS',
             'creation_dt': acquisition_date,
             'platform': {'code': satellite},
             'instrument': {'name': instrument},
@@ -395,18 +401,26 @@ def archive_document(doc, uri, index, sources_policy):
 
 
 def add_dataset(doc, uri, index, sources_policy):
-    logging.info("Indexing %s", uri)
+    logging.info("Indexing dataset: {} with URI:  {}".format(doc['id'], uri))
+
     resolver = Doc2Dataset(index)
     dataset, err  = resolver(doc, uri)
-    if err is not None:
-        logging.error("%s", err)
+    existing_dataset = index.datasets.get(doc['id'])
+
+    if not existing_dataset:
+        logging.info("Trying to index")
+        if err is not None:
+            logging.error("%s", err)
+        else:
+            try:
+                index.datasets.add(dataset, with_lineage=False) # Source policy to be checked in sentinel 2 dataset types
+            except Exception as e:
+                logging.error("Unhandled exception %s", e)
     else:
+        logging.info("Updating dataset instead.")
         try:
-            index.datasets.add(dataset, sources_policy=sources_policy) # Source policy to be checked in sentinel 2 datase types
-        except changes.DocumentMismatchError as e:
             index.datasets.update(dataset, {tuple(): changes.allow_any})
         except Exception as e:
-            err = e
             logging.error("Unhandled exception %s", e)
 
     return dataset, err
@@ -452,8 +466,8 @@ def worker(config, bucket_name, prefix, suffix, start_date, end_date, func, unsa
         except EOFError:
             logging.error("EOF Error hit.")
             break
-        except ValueError:
-            logging.error("Found data for a satellite that we can't handle.")
+        except ValueError as e:
+            logging.error("Found data for a satellite that we can't handle: {}".format(e))
         finally:
             queue.task_done()
 

@@ -3,6 +3,7 @@ data
 notebooks/.datacube.conf
 notebooks/.local/
 notebooks/.cache/
+notebooks/.config/
 notebooks/.ipython/
 notebooks/.jupyter/
 notebooks/.python_history
