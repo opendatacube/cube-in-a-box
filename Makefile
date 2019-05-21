@@ -33,6 +33,10 @@ product-wofs:
 	docker-compose exec jupyter \
 		datacube product add /opt/odc/scripts/product_definitions/wofs.yaml
 
+product-fc:
+	docker-compose exec jupyter \
+		datacube product add /opt/odc/scripts/product_definitions/ls_usgs_fc_scene.yaml
+
 index-landsat:
 	docker-compose exec jupyter bash -c \
 		"cd /opt/odc/scripts && python3 ./ls_public_bucket.py frontiersi-odc-test \
@@ -47,13 +51,19 @@ index-wofs:
 		--suffix=".yaml" \
 		--start_date 1980-01-01 --end_date 2020-01-01"
 
+index-fc:
+	docker-compose exec jupyter bash -c \
+		"cd /opt/odc/scripts && python3 ./ls_public_bucket.py frontiersi-odc-data \
+		-p case-studies/fc/usgs \
+		--suffix=".yaml" \
+		--start_date 1980-01-01 --end_date 2020-01-01"
+
 index-landsat-prod:
 	docker-compose exec jupyter bash -c \
 		"cd /opt/odc/scripts && python3 ./ls_public_bucket.py frontiersi-odc-data \
 		-p case-studies/usgs/LANDSAT_8 \
 		--suffix="T1.xml" \
 		--start_date 1980-01-01 --end_date 2020-01-01"
-
 
 check-landsat:
 	docker-compose exec jupyter bash -c \

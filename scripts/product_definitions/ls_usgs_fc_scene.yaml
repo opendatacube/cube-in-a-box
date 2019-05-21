@@ -1,0 +1,39 @@
+name: ls8_usgs_fc_scene
+description: 'Landsat 8 Fractional Cover based on USGS Level 2 Scenes'
+metadata_type: eo
+
+metadata:
+  format:
+    name: GeoTiff
+  instrument:
+    name: OLI_TIRS
+  platform:
+    code: LANDSAT_8
+  product_type: fractional_cover
+
+measurements:
+  - aliases:
+      - bare
+    dtype: int16
+    name: BS
+    nodata: -1
+    units: percent
+  - aliases:
+      - green_veg
+    dtype: int16
+    name: PV
+    nodata: -1
+    units: percent
+  - aliases:
+      - dead_veg
+    dtype: int16
+    name: NPV
+    nodata: -1
+    units: percent
+  - aliases:
+      - err
+    dtype: int16
+    name: UE
+    nodata: -1
+    units: '1'
+
