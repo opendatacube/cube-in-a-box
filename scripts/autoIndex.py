@@ -53,7 +53,7 @@ def index_dataset(index, s3, url, parse_only):
         logger.info("Skipping indexing step")
     else:
         logger.info("Indexing {}".format(key))
-        add_dataset(data, uri, idx, "verify")
+        add_dataset(data, uri, index, "verify")
 
 
 def index_datasets(items, parse_only=False):
