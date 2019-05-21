@@ -5,6 +5,14 @@ import subprocess
 import click
 import logging
 import json
+import boto3
+import datacube
+from urllib.parse import urlparse
+
+# from  multiprocessing import Process, current_process, Queue, Manager, cpu_count
+
+from ls_public_bucket import _parse_group, make_metadata_doc, get_s3_url, add_dataset
+
 
 from satstac import Catalog, Collection, Item
 from satsearch import Search
@@ -24,11 +32,40 @@ def stac_search(extent, start_date, end_date):
 
 
 def index_datasets(items):
+    s3 = boto3.resource("s3")
+    dc = datacube.Datacube()
+    idx = dc.index
     for item in items:
         if "MTL" in item.assets:
-            logger.info("TODO: index {}".format(item.assets["MTL"]["href"]))
+            logger.info("Downloading {}".format(item.assets["MTL"]["href"]))
+            bucket_name, key = parse_s3_url(item.assets["MTL"]["href"])
+            obj = s3.Object(bucket_name, key).get(ResponseCacheControl='no-cache')
+            raw = obj['Body'].read()
+            raw_string = raw.decode('utf8')
+            logger.info("Parsing {}".format(key))
+            try:
+                txt_doc = _parse_group(iter(raw_string.split("\n")))['L1_METADATA_FILE']
+                data = make_metadata_doc(txt_doc, bucket_name, key)
+            except Exception as e:
+                logger.error("Metadata parsing error: {}; {}".format(e.__class__.__name__, e))
+            uri = get_s3_url(bucket_name, key)
+            cdt = data['creation_dt']
+            logger.info("Indexing {}".format(key))
+            add_dataset(data, uri, idx, "verify")
         else:
-            logger.warn("WARN: Item {} does not have an MTL asset (Sentinel2?) - skipping".format(item))
+            logger.info("Item {} does not have an MTL asset (Sentinel2?) - skipping".format(item))
+
+
+def parse_s3_url(url):
+    o = urlparse(url)
+    if o.netloc.startswith("s3"):
+        # https://s3-{region}.amazonaws.com/{bucket-name}/{key}
+        bucket_name, key = o.path.split("/", 2)[1:]
+    else:
+        # https://{bucket-name}.s3.amazonaws.com/{key}
+        bucket_name = o.netloc.split(".")[0]
+        key = o.path.split("/",1)[1]
+    return bucket_name, key
 
 
 # Probably should use Click like the other scripts? -agl
