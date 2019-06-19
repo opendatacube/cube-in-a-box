@@ -61,6 +61,7 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash -ex
           # Install our dependencies
+          export DEBIAN_FRONTEND=noninteractive
           apt-get update && apt-get -y install python-pip
           curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
           add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
