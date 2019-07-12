@@ -70,6 +70,15 @@ check-landsat:
 		datacube product list \
 		&& datacube dataset search product ='landsat_8_USARD' |grep id |wc -l
 
+# for DEAfrica
+index-africa-vic-landsat:
+	docker-compose exec jupyter bash -c \
+		"cd /opt/odc/scripts && python3 ./ls_public_bucket.py deafrica-data \
+		-p test \
+		--suffix="T1.xml" \
+		--start_date 1980-01-01 --end_date 2020-01-01"
+
+
 # Some extra commands to help in managing things.
 # Rebuild the image
 build:
