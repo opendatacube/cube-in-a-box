@@ -76,7 +76,7 @@ index-africa-vic-landsat:
 		"cd /opt/odc/scripts && python3 ./ls_public_bucket.py deafrica-data \
 		-p test \
 		--suffix="T1.xml" \
-		--start_date 1980-01-01 --end_date 2020-01-01"
+		--start_date "1980-01-01 --end_date 2020-01-01"
 
 
 # Some extra commands to help in managing things.
