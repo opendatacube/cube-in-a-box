@@ -27,7 +27,7 @@ from queue import Empty
 GUARDIAN = "GUARDIAN_QUEUE_EMPTY"
 AWS_PDS_TXT_SUFFIX = "MTL.txt"
 LANDSAT_XML_SUFFIX = 'T1.xml'
-
+GENERAL_LANDSAT_XML_SUFFIX = '.xml'
 
 MTL_PAIRS_RE = re.compile(r'(\w+)\s=\s(.*)')
 
