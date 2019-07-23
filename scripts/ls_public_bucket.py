@@ -445,7 +445,7 @@ def worker(config, bucket_name, prefix, suffix, start_date, end_date, func, unsa
                 # Attempt to process text document
                 txt_doc = _parse_group(iter(raw_string.split("\n")))['L1_METADATA_FILE']
                 data = make_metadata_doc(txt_doc, bucket_name, key)
-            elif suffix == LANDSAT_XML_SUFFIX:
+            elif suffix == LANDSAT_XML_SUFFIX or suffix == GENERAL_LANDSAT_XML_SUFFIX:
                 data = make_xml_doc(raw_string, bucket_name, key)
             else:
                 yaml = YAML(typ=safety, pure=False)
