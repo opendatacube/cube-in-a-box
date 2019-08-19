@@ -202,6 +202,9 @@ def make_xml_doc(xmlstring, bucket_name, object_key):
     satellite = doc.find('.//satellite').text
     data_provider = doc.find('.//data_provider').text
     instrument = doc.find('.//instrument').text
+    path = doc.find('.//wrs').attrib['path']
+    row = doc.find('.//wrs').attrib['row']
+    region_code = f"{int(path):03d}{int(row):03d}"
 
     # other params like cloud_shadow, snow_ice, tile_grid, orientation_angle are also available
 
@@ -287,6 +290,7 @@ def make_xml_doc(xmlstring, bucket_name, object_key):
             # This is hardcoded now... needs to be not hardcoded!
             'product_type': 'LEVEL2_USGS',
             'creation_dt': acquisition_date,
+            'region_code': region_code,
             'platform': {'code': satellite},
             'instrument': {'name': instrument},
             'extent': {
