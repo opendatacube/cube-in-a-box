@@ -454,9 +454,14 @@ def worker(config, bucket_name, prefix, suffix, start_date, end_date, func, unsa
             if data:
                 uri = get_s3_url(bucket_name, key)
                 cdt = data['creation_dt']
-                # Use the fact lexicographical ordering matches the chronological ordering
-                if cdt >= start_date and cdt < end_date:
-                    # logging.info("calling %s", func)
+
+                # Only do the date check if we have dates set
+                if cdt and start_date and cdt:
+                    # Use the fact lexicographical ordering matches the chronological ordering
+                    if cdt >= start_date and cdt < end_date:
+                        # logging.info("calling %s", func)
+                        func(data, uri, index, sources_policy)
+                else:
                     func(data, uri, index, sources_policy)
             else:
                 logging.error("Failed to get data returned... skipping file.")
