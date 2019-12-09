@@ -2,28 +2,29 @@
 # Once running, you can access a Jupyter environment 
 # at 'http://localhost' with password 'secretpassword'
 
-# 1. Get the pathrows file
-download-pathrows-file:
-	wget https://landsat.usgs.gov/sites/default/files/documents/WRS2_descending.zip -O ./data/wrs2_descending.zip
-
-# 2. Start your Docker environment
+# 1. Start your Docker environment
 up:
 	docker-compose up
 
-# 3. Prepare the database
+# 2. Prepare the database
 initdb:
 	docker-compose exec jupyter datacube -v system init
-	docker-compose exec jupyter datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml
 
-# 4. Index a dataset (just an example, you can change the extents)
+# 3. Add a product definition for landsat level 1
+add-product-definition:
+	docker-compose exec jupyter datacube product add \
+		https://raw.githubusercontent.com/opendatacube/datacube-dataset-config/master/products/ls_usgs_level1_scene.yaml
+
+# 3. Index a dataset (just an example, you can change the extents)
 index:
 	# Note that you need environment variables ODC_ACCESS_KEY and ODC_SECRET_KEY set.
 	# These need to be valid AWS keys. KEEP THEM SECRET, KEEP THEM SAFE!
 
 	docker-compose exec jupyter bash -c \
 		"cd /opt/odc/scripts && python3 ./autoIndex.py \
-			-p '/opt/odc/data/wrs2_descending.zip' \
-			-e '146.30,146.83,-43.54,-43.20'"
+			--start_date '2019-01-01' \
+			--end_date '2020-01-01' \
+			--extents '146.30,146.83,-43.54,-43.20'"
 
 # Some extra commands to help in managing things.
 # Rebuild the image
@@ -38,9 +39,6 @@ shell:
 clear:
 	docker-compose stop
 	docker-compose rm -fs
-
-# Blow it all away and start again. First start the stack with `make up`
-load-from-scratch: initdb download-pathrows-file index
 
 # Update S3 template (this is owned by FrontierSI)
 update-s3:

@@ -1,32 +1,31 @@
 #!/usr/bin/env python3
-import ogr
-import os
-import subprocess
-import click
-import logging
 import json
-import boto3
-import datacube
+import logging
+from multiprocessing import Manager, Process, cpu_count, current_process
+from queue import Empty
 from urllib.parse import urlparse
 
-from  multiprocessing import Process, current_process, Queue, Manager, cpu_count
-from queue import Empty
+import boto3
+import click
+import datacube
 
-from ls_public_bucket import _parse_group, make_metadata_doc, get_s3_url, add_dataset
-
-
-from satstac import Catalog, Collection, Item
+from ls_public_bucket import (_parse_group, add_dataset, get_s3_url,
+                              make_metadata_doc)
 from satsearch import Search
 
 STOP_SIGN = "ALL_COMPLETE_END_WORKER"
 
 logger = logging.getLogger('odcindexer')
 
+
 def stac_search(extent, start_date, end_date):
     """ Convert lat, lon to pathrows """
     logger.info("Querying STAC for area: {} and times: {} - {} (UTC)".format(extent, start_date, end_date))
-    srch = Search(bbox=extent, time='{}T00:00:00Z/{}T23:59:59Z'.format(start_date,end_date), 
-                    url="https://sat-api.developmentseed.org/stac/search")
+    srch = Search(
+        bbox=extent,
+        time='{}T00:00:00Z/{}T23:59:59Z'.format(start_date, end_date),
+        url="https://sat-api.developmentseed.org/stac/search"
+    )
     try:
         logger.info("Found {} items".format(srch.found()))
         return srch
@@ -48,7 +47,6 @@ def index_dataset(index, s3, url, parse_only):
         logger.error("Metadata parsing error: {}; {}".format(e.__class__.__name__, e))
         return
     uri = get_s3_url(bucket_name, key)
-    cdt = data['creation_dt']
     if parse_only:
         logger.info("Skipping indexing step")
     else:
@@ -90,7 +88,7 @@ def index_datasets_multi(items, parse_only=False):
     manager = Manager()
     queue = manager.Queue()
     worker_count = cpu_count() * 2
-    
+
     processes = []
     for i in range(worker_count):
         proc = Process(target=worker, args=[parse_only, queue])
@@ -108,7 +106,7 @@ def index_datasets_multi(items, parse_only=False):
 
     for proc in processes:
         proc.join()
-    
+
 
 def parse_s3_url(url):
     o = urlparse(url)
@@ -118,11 +116,10 @@ def parse_s3_url(url):
     else:
         # https://{bucket-name}.s3.amazonaws.com/{key}
         bucket_name = o.netloc.split(".")[0]
-        key = o.path.split("/",1)[1]
+        key = o.path.split("/", 1)[1]
     return bucket_name, key
 
 
-# Probably should use Click like the other scripts? -agl
 @click.command()
 @click.option('--extents', '-e', default="146.30,146.83,-43.54,-43.20", help="Extent to index in the form lon_min,lon_max,lat_min,latmax")
 # @click.option('--pathrow_file', '-p', default="/opt/odc/data/wrs2_descending.zip", help="Absolute path to the pathrow file, e.g., /tmp/example.zip")
@@ -153,5 +150,3 @@ if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
     logger.info("Starting the index process")
     index()
-
-

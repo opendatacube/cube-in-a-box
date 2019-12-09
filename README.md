@@ -9,11 +9,10 @@ All you need to know:
  * Start a local environment: `docker-compose up`
  * Set up your local postgres database (after the above has finished) using:
    * `docker-compose exec jupyter datacube -v system init`
-   * `docker-compose exec jupyter datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml`
- * Before indexing Landsat 8, you need to grab the pathrows index. Download the file from [here](https://landsat.usgs.gov/sites/default/files/documents/WRS2_descending.zip) and save the zip file to `data/wrs2_descending.zip`
+   * `docker-compose exec jupyter datacube product add https://raw.githubusercontent.com/opendatacube/datacube-dataset-config/master/products/ls_usgs_level1_scene.yaml`
  * Index a default region with either:
-   * `docker-compose exec jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -p '/opt/odc/data/wrs2_descending.zip' -e '146.30,146.83,-43.54,-43.20'"`
-   * `docker-compose exec jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -p '/opt/odc/data/wrs2_descending.zip' -e '146.30,146.83,-43.54,-43.20' --start_date '2018-01-01' --end_date '2018-10-09'"`
+   * `docker-compose exec jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -e '146.30,146.83,-43.54,-43.20'"`
+   * `docker-compose exec jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -e '146.30,146.83,-43.54,-43.20' --start_date '2018-01-01' --end_date '2018-10-09'"`
  * View the Jupyter notebook at [http://localhost](http://localhost) using the password `secretpassword`
  * Shutdown your local environment:
    * `docker-compose down`
@@ -22,9 +21,9 @@ If you have `make`:
  * Set environment variables for `ODC_ACCESS_KEY` and `ODC_SECRET_KEY` to something valid with your AWS account credentials.
  * Start a local environment using `make up`
  * Set up your local postgres database (after the above has finished) using `make initdb`
- * Before indexing Landsat 8, you need to grab the pathrows index using `make download-pathrows-file`
+ * Add the Landsat level 1 product definition `make add-product-definition`
  * Index a default region with `make index` 
-    * Edit the Makefile to change the region of interest
+    * (optional) Edit the Makefile to change the region of interest
  * View the Jupyter notebook at [http://localhost](http://localhost) using the password `secretpassword`
 
 # Deploying to AWS:

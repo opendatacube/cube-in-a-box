@@ -1,6 +1,7 @@
 data
 .ipynb_checkpoints/
 notebooks/.datacube.conf
+notebooks/.config/
 notebooks/.local/
 notebooks/.cache/
 notebooks/.ipython/
