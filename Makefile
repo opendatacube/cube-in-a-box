@@ -40,9 +40,9 @@ clear:
 	docker-compose stop
 	docker-compose rm -fs
 
-# Update S3 template (this is owned by FrontierSI)
-update-s3:
-	aws s3 cp opendatacube-test.yml s3://cubeinabox/ --acl public-read
+# Update S3 template (this is owned by Digital Earth Australia)
+upload-s3:
+	aws s3 cp cube-in-a-box-cloudformation.yml s3://opendatacube-cube-in-a-box/ --acl public-read
 
 # This section can be used to deploy onto CloudFormation instead of the 'magic link'
 create-infra:
