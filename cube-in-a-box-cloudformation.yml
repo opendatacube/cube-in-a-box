@@ -42,8 +42,8 @@ Parameters:
     Type: String
     Default: us-west-2
     AllowedValues: [us-west-2, ap-southeast-2]
-Mappings: 
-  RegionMap: 
+Mappings:
+  RegionMap:
     us-west-2:
       "HVM64": "ami-04ef7170e45541f07"
     ap-southeast-2:
@@ -72,8 +72,6 @@ Resources:
           wget https://github.com/crc-si/cube-in-a-box/archive/master.zip -O /tmp/archive.zip
           unzip /tmp/archive.zip
           mv cube-in-a-box-master /opt/odc
-          # And get some data
-          wget https://landsat.usgs.gov/sites/default/files/documents/WRS2_descending.zip -O /opt/odc/data/wrs2_descending.zip
           # We need to remove some local vars. This is a bit of a hack...
           sed --in-place '/AWS_/d' /opt/odc/docker-compose.yml
           sed --in-place 's/secretpassword/${SecretPassword}/g' /opt/odc/docker-compose.yml
@@ -87,9 +85,10 @@ Resources:
           # Wait for them to wake up
           sleep 15
           # Initialise and load a product, and then some data
+          # Note to future self, we can't use make here because of TTY interactivity (the -T flag)
           docker-compose exec -T jupyter datacube -v system init
-          docker-compose exec -T jupyter datacube product add /opt/odc/docs/config_samples/dataset_types/ls_usgs.yaml
-          docker-compose exec -T jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py -p ''/opt/odc/data/wrs2_descending.zip'' -e ${ExtentToIndex}"
+          docker-compose exec -T jupyter datacube product add https://raw.githubusercontent.com/opendatacube/datacube-dataset-config/master/products/ls_usgs_level1_scene.yaml
+          docker-compose exec -T jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py --extents ${ExtentToIndex}"
       Tags:
         - Key:   "Name"
           Value: !Ref 'EC2InstanceName'
