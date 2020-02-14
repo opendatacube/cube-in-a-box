@@ -103,7 +103,7 @@ def satellite_ref(sat):
 def absolutify_paths(doc, bucket_name, obj_key):
     objt_key = format_obj_key(obj_key)
     for band in doc['image']['bands'].values():
-        band['path'] = get_s3_url(bucket_name, objt_key + '/'+band['path'])
+        band['path'] = get_s3_url(bucket_name, objt_key + '/' + band['path'])
     return doc
 
 
@@ -263,11 +263,14 @@ def iterate_datasets(bucket_name, config, prefix, suffix, start_date, end_date, 
         proc.join()
 
 
-
-@click.command(help= "Enter Bucket name. Optional to enter configuration file to access a different database")
+@click.command(help="Enter Bucket name. Optional to enter configuration file to access a different database")
 @click.argument('bucket_name')
-@click.option('--config','-c',help="Pass the configuration file to access the database",
-        type=click.Path(exists=True))
+@click.option(
+    '--config',
+    '-c',
+    help="Pass the configuration file to access the database",
+    type=click.Path(exists=True)
+)
 @click.option('--prefix', '-p', help="Pass the prefix of the object to the bucket")
 @click.option('--suffix', '-s', default=".yaml", help="Defines the suffix of the metadata_docs that will be used to load datasets. For AWS PDS bucket use MTL.txt")
 @click.option('--start_date', help="Pass the start acquisition date, in YYYY-MM-DD format")
