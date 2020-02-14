@@ -1,26 +1,20 @@
 
-# coding: utf-8
-from xml.etree import ElementTree
-from pathlib import Path
-import os
-from osgeo import osr
-import dateutil
-from dateutil import parser
-from datetime import timedelta
-import uuid
-import yaml
 import logging
-import click
 import re
+import uuid
+from multiprocessing import Manager, Process, cpu_count, current_process
+from queue import Empty
+
 import boto3
+import click
 import datacube
+from botocore import UNSIGNED
+from botocore.config import Config
 from datacube.index.hl import Doc2Dataset
 from datacube.utils import changes
-from ruamel.yaml import YAML
+from osgeo import osr
 
-from multiprocessing import Process, current_process, Queue, Manager, cpu_count
-from time import sleep, time
-from queue import Empty
+from ruamel.yaml import YAML
 
 GUARDIAN = "GUARDIAN_QUEUE_EMPTY"
 AWS_PDS_TXT_SUFFIX = "MTL.txt"
@@ -150,8 +144,8 @@ def make_metadata_doc(mtl_data, bucket_name, object_key):
             'projection': {
                 'geo_ref_points': geo_ref_points,
                 'spatial_reference': 'EPSG:%s' % cs_code,
-                            }
-                        },
+                }
+            },
         'image': {
             'bands': {
                 band[1]: {
@@ -198,7 +192,7 @@ def add_dataset(doc, uri, index, sources_policy):
     else:
         try:
             index.datasets.add(dataset, sources_policy=sources_policy) # Source policy to be checked in sentinel 2 datase types
-        except changes.DocumentMismatchError as e:
+        except changes.DocumentMismatchError:
             index.datasets.update(dataset, {tuple(): changes.allow_any})
         except Exception as e:
             err = e
@@ -206,10 +200,11 @@ def add_dataset(doc, uri, index, sources_policy):
 
     return dataset, err
 
+
 def worker(config, bucket_name, prefix, suffix, start_date, end_date, func, unsafe, sources_policy, queue):
-    dc=datacube.Datacube(config=config)
+    dc = datacube.Datacube(config=config)
     index = dc.index
-    s3 = boto3.resource("s3")
+    s3 = boto3.resource("s3", config=Config(signature_version=UNSIGNED))
     safety = 'safe' if not unsafe else 'unsafe'
 
     while True:
@@ -218,7 +213,7 @@ def worker(config, bucket_name, prefix, suffix, start_date, end_date, func, unsa
             if key == GUARDIAN:
                 break
             logging.info("Processing %s %s", key, current_process())
-            obj = s3.Object(bucket_name, key).get(ResponseCacheControl='no-cache')
+            obj = s3.Object(bucket_name, key).get()
             raw = obj['Body'].read()
             if suffix == AWS_PDS_TXT_SUFFIX:
                 # Attempt to process text document
@@ -246,7 +241,7 @@ def iterate_datasets(bucket_name, config, prefix, suffix, start_date, end_date, 
     manager = Manager()
     queue = manager.Queue()
 
-    s3 = boto3.resource('s3')
+    s3 = boto3.resource('s3', config=Config(signature_version=UNSIGNED))
     bucket = s3.Bucket(bucket_name)
     logging.info("Bucket : %s prefix: %s ", bucket_name, str(prefix))
     # safety = 'safe' if not unsafe else 'unsafe'
@@ -258,7 +253,7 @@ def iterate_datasets(bucket_name, config, prefix, suffix, start_date, end_date, 
         processess.append(proc)
         proc.start()
 
-    for obj in bucket.objects.filter(Prefix = str(prefix)):
+    for obj in bucket.objects.filter(Prefix=str(prefix)):
         if (obj.key.endswith(suffix)):
             queue.put(obj.key)
 
@@ -289,5 +284,3 @@ def main(bucket_name, config, prefix, suffix, start_date, end_date, archive, uns
 
 if __name__ == "__main__":
     main()
-
-

@@ -16,8 +16,7 @@ services:
       - DB_USERNAME=opendatacube
       - DB_PASSWORD=opendatacubepassword
       - DB_DATABASE=opendatacube
-      - AWS_ACCESS_KEY_ID=${ODC_ACCESS_KEY}
-      - AWS_SECRET_ACCESS_KEY=${ODC_SECRET_KEY}
+      - AWS_NO_SIGN_REQUEST=true
     ports:
       - "80:8888"
     volumes:
@@ -25,5 +24,4 @@ services:
       - ./data:/opt/odc/data
       - ./notebooks:/notebooks
     restart: always
-    shm_size: 1g
     command: jupyter notebook --allow-root --ip="0.0.0.0" --NotebookApp.token='secretpassword'

@@ -8,6 +8,8 @@ from urllib.parse import urlparse
 import boto3
 import click
 import datacube
+from botocore import UNSIGNED
+from botocore.config import Config
 
 from ls_public_bucket import (_parse_group, add_dataset, get_s3_url,
                               make_metadata_doc)
@@ -36,7 +38,7 @@ def stac_search(extent, start_date, end_date):
 def index_dataset(index, s3, url, parse_only):
     logger.info("Downloading {}".format(url))
     bucket_name, key = parse_s3_url(url)
-    obj = s3.Object(bucket_name, key).get(ResponseCacheControl='no-cache')
+    obj = s3.Object(bucket_name, key).get()
     raw = obj['Body'].read()
     raw_string = raw.decode('utf8')
     logger.info("Parsing {}".format(key))
@@ -55,7 +57,7 @@ def index_dataset(index, s3, url, parse_only):
 
 
 def index_datasets(items, parse_only=False):
-    s3 = boto3.resource("s3")
+    s3 = boto3.resource("s3", config=Config(signature_version=UNSIGNED))
     dc = datacube.Datacube()
     idx = dc.index
     for item in items:
@@ -66,7 +68,7 @@ def index_datasets(items, parse_only=False):
 
 
 def worker(parse_only, queue):
-    s3 = boto3.resource("s3")
+    s3 = boto3.resource("s3", config=Config(signature_version=UNSIGNED))
     dc = datacube.Datacube()
     idx = dc.index
 
@@ -122,7 +124,6 @@ def parse_s3_url(url):
 
 @click.command()
 @click.option('--extents', '-e', default="146.30,146.83,-43.54,-43.20", help="Extent to index in the form lon_min,lon_max,lat_min,latmax")
-# @click.option('--pathrow_file', '-p', default="/opt/odc/data/wrs2_descending.zip", help="Absolute path to the pathrow file, e.g., /tmp/example.zip")
 @click.option('--start_date', default="2013-02-11", help="Start date of the acquisitions to index, in YYYY-MM-DD format (UTC)")
 @click.option('--end_date', default="2099-12-31", help="End date of the acquisitions to index, in YYYY-MM-DD format (UTC)")
 @click.option('--single_process_only', is_flag=True, help="If true, multi-processing is disabled")
