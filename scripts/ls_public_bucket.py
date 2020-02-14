@@ -1,4 +1,3 @@
-
 import logging
 import re
 import uuid
@@ -138,14 +137,14 @@ def make_metadata_doc(mtl_data, bucket_name, object_key):
             'to_dt': sensing_time,
             'center_dt': sensing_time,
             'coord': coordinates,
-                  },
+        },
         'format': {'name': 'GeoTiff'},
         'grid_spatial': {
             'projection': {
                 'geo_ref_points': geo_ref_points,
                 'spatial_reference': 'EPSG:%s' % cs_code,
-                }
-            },
+            }
+        },
         'image': {
             'bands': {
                 band[1]: {
@@ -161,7 +160,7 @@ def make_metadata_doc(mtl_data, bucket_name, object_key):
 
 
 def format_obj_key(obj_key):
-    obj_key ='/'.join(obj_key.split("/")[:-1])
+    obj_key = '/'.join(obj_key.split("/")[:-1])
     return obj_key
 
 
@@ -178,7 +177,7 @@ def archive_document(doc, uri, index, sources_policy):
         yield dataset.id
 
     resolver = Doc2Dataset(index)
-    dataset, err  = resolver(doc, uri)
+    dataset, _ = resolver(doc, uri)
     index.datasets.archive(get_ids(dataset))
     logging.info("Archiving %s and all sources of %s", dataset.id, dataset.id)
 
@@ -186,12 +185,12 @@ def archive_document(doc, uri, index, sources_policy):
 def add_dataset(doc, uri, index, sources_policy):
     logging.info("Indexing %s", uri)
     resolver = Doc2Dataset(index)
-    dataset, err  = resolver(doc, uri)
+    dataset, err = resolver(doc, uri)
     if err is not None:
         logging.error("%s", err)
     else:
         try:
-            index.datasets.add(dataset, sources_policy=sources_policy) # Source policy to be checked in sentinel 2 datase types
+            index.datasets.add(dataset, sources_policy=sources_policy)  # Source policy to be checked in sentinel 2 datase types
         except changes.DocumentMismatchError:
             index.datasets.update(dataset, {tuple(): changes.allow_any})
         except Exception as e:
@@ -280,7 +279,7 @@ def main(bucket_name, config, prefix, suffix, start_date, end_date, archive, uns
     logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
     action = archive_document if archive else add_dataset
     iterate_datasets(bucket_name, config, prefix, suffix, start_date, end_date, action, unsafe, sources_policy)
-   
+
 
 if __name__ == "__main__":
     main()
