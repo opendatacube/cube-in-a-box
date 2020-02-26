@@ -2,11 +2,13 @@ version: '3'
 
 services:
   postgres:
-    image: postgres:10.3
+    image: kartoza/postgis:11.0-2.5
     environment:
       - POSTGRES_DB=opendatacube
       - POSTGRES_PASSWORD=opendatacubepassword
       - POSTGRES_USER=opendatacube
+    ports:
+      - 5432:5432
     restart: always
   
   jupyter:
