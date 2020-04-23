@@ -1,0 +1,14 @@
+# s3/boto, let aiobotocore decide botocore/boto3/awscli versions
+aiobotocore[boto3,awscli]==0.11.0
+python-dateutil==2.8.0
+matplotlib
+click
+scikit-image
+ruamel.yaml
+awscli
+jupyter
+
+--extra-index-url="https://packages.dea.ga.gov.au"
+datacube[performance,distributed]
+odc-apps-cloud[GCP,THREDDS]
+odc-apps-dc-tools
