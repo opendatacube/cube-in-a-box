@@ -1,5 +1,5 @@
 # s3/boto, let aiobotocore decide botocore/boto3/awscli versions
-aiobotocore[boto3,awscli]==0.11.0
+aiobotocore[boto3,awscli]
 python-dateutil==2.8.0
 matplotlib
 click
@@ -7,8 +7,11 @@ scikit-image
 ruamel.yaml
 awscli
 jupyter
+folium
+# git+git://github.com/sat-utils/sat-search@0.3.0-b2
+git+git://github.com/sat-utils/sat-search
 
 --extra-index-url="https://packages.dea.ga.gov.au"
-datacube[performance,distributed]
+datacube[performance,s3]
 odc-apps-cloud[GCP,THREDDS]
 odc-apps-dc-tools

@@ -5,8 +5,6 @@ ARG py_env_path=/env
 
 RUN mkdir -p /conf
 COPY requirements.txt /conf/
-RUN env-build-tool wheels /conf/requirements.txt /wheels
-ARG py_env_path
 RUN env-build-tool new /conf/requirements.txt ${py_env_path} /wheels
 
 FROM opendatacube/geobase:runner
@@ -24,15 +22,16 @@ RUN apt-get update -y \
   git \
   && rm -rf /var/lib/apt/lists/*
 
-COPY with_bootstrap /bin/
+
+RUN export GDAL_DATA=$(gdal-config --datadir)
 ENV LC_ALL=C.UTF-8 \
-    PATH="$py_env_path/bin:$PATH"
+    PATH="/env/bin:$PATH"
 
-RUN pip3 install git+https://github.com/sat-utils/sat-search.git@0.3.0-b2
+RUN useradd -m -s /bin/bash -N jovyan
+USER jovyan
 
-RUN useradd -m -s /bin/bash -N dcuser
-USER dcuser
+WORKDIR /notebooks
 
-ENTRYPOINT ["/bin/tini", "-s", "--", "with_bootstrap"]
+ENTRYPOINT ["/bin/tini", "--"]
 
 CMD ["jupyter", "notebook", "--allow-root", "--ip='0.0.0.0'" "--NotebookApp.token='secretpassword'"]

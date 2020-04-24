@@ -81,7 +81,7 @@ def get_coords(geo_ref_points, spatial_ref):
     t = osr.CoordinateTransformation(spatial_ref, spatial_ref.CloneGeogCS())
 
     def transform(p):
-        lon, lat, z = t.TransformPoint(p['x'], p['y'])
+        lat, lon, z = t.TransformPoint(p['x'], p['y'])
         return {'lon': lon, 'lat': lat}
 
     return {key: transform(p) for key, p in geo_ref_points.items()}
