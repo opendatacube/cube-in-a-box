@@ -11,15 +11,12 @@ initdb:
 	docker-compose exec jupyter datacube -v system init
 
 # 3. Add a product definition for landsat level 1
-add-product-definition:
+product:
 	docker-compose exec jupyter datacube product add \
 		https://raw.githubusercontent.com/opendatacube/datacube-dataset-config/master/products/ls_usgs_level1_scene.yaml
 
 # 3. Index a dataset (just an example, you can change the extents)
 index:
-	# Note that you need environment variables ODC_ACCESS_KEY and ODC_SECRET_KEY set.
-	# These need to be valid AWS keys. KEEP THEM SECRET, KEEP THEM SAFE!
-
 	docker-compose exec jupyter bash -c \
 		"cd /opt/odc/scripts && python3 ./autoIndex.py \
 			--start_date '2019-01-01' \

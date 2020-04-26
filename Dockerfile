@@ -1,11 +1,37 @@
-FROM opendatacube/jupyter
 
-USER root
+FROM opendatacube/geobase:wheels as env_builder
 
-RUN pip3 install matplotlib click scikit-image pep8 ruamel.yaml sat-search
+ARG py_env_path=/env
 
-USER $NB_UID
+RUN mkdir -p /conf
+COPY requirements.txt /conf/
+RUN env-build-tool new /conf/requirements.txt ${py_env_path} /wheels
+
+FROM opendatacube/geobase:runner
+ARG py_env_path
+
+COPY --from=env_builder $py_env_path $py_env_path
+COPY --from=env_builder /bin/tini /bin/tini
+
+RUN apt-get update -y \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing --no-install-recommends \
+  # developer convenience
+  postgresql-client-10 \
+  less \
+  vim \
+  git \
+  && rm -rf /var/lib/apt/lists/*
+
+
+RUN export GDAL_DATA=$(gdal-config --datadir)
+ENV LC_ALL=C.UTF-8 \
+    PATH="/env/bin:$PATH"
+
+RUN useradd -m -s /bin/bash -N jovyan
+USER jovyan
 
 WORKDIR /notebooks
 
-CMD jupyter notebook
+ENTRYPOINT ["/bin/tini", "--"]
+
+CMD ["jupyter", "notebook", "--allow-root", "--ip='0.0.0.0'" "--NotebookApp.token='secretpassword'"]
