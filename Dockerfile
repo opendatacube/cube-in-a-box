@@ -1,5 +1,5 @@
 
-FROM opendatacube/geobase:wheels as env_builder
+FROM opendatacube/geobase:wheels-3.0.4  as env_builder
 
 ARG py_env_path=/env
 
@@ -7,7 +7,7 @@ RUN mkdir -p /conf
 COPY requirements.txt /conf/
 RUN env-build-tool new /conf/requirements.txt ${py_env_path} /wheels
 
-FROM opendatacube/geobase:runner
+FROM opendatacube/geobase:runner-3.0.4
 ARG py_env_path
 
 COPY --from=env_builder $py_env_path $py_env_path
