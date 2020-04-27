@@ -89,10 +89,10 @@ def get_coords(geo_ref_points, spatial_ref):
     def transform(p):
         # GDAL 3 reverses coordinate order, because... standards
         if LON_LAT_ORDER:
-            print("GDAL 2.0 order")
+            # GDAL 2.0 order
             lon, lat, z = t.TransformPoint(p['x'], p['y'])
         else:
-            print("GDAL 3.0 order")
+            # GDAL 3.0 order
             lat, lon, z = t.TransformPoint(p['x'], p['y'])
         return {'lon': lon, 'lat': lat}
 
