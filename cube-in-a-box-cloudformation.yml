@@ -57,6 +57,10 @@ Resources:
       KeyName: !Ref 'KeyName'
       ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", HVM64]
       IamInstanceProfile: !Ref ODCInstanceProfile
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: 25
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash -ex
