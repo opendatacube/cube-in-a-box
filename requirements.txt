@@ -10,12 +10,12 @@ odc-aws
 odc-aio
 odc-apps-cloud
 odc-ui
+odc-index
 # Pinned for Alex to index STAC.
-sat-search==0.3.0-rc1
-odc-index==0.1.dev573+ge694e61
+sat-search==0.3.0
 # We really should publish this as a package.
-git+https://github.com/opendatacube/datacube-index.git@add-stac-api-to-dc-command
-# Jupyter components
+git+https://github.com/opendatacube/datacube-index.git
+# Jupyter components.
 gdal
 scipy
 jupyter==1.0.0

@@ -19,6 +19,7 @@ services:
       - DB_PASSWORD=opendatacubepassword
       - DB_DATABASE=opendatacube
       - AWS_NO_SIGN_REQUEST=true
+      - STAC_API_URL=https://earth-search.aws.element84.com/v0/
     ports:
       - "80:8888"
     volumes:

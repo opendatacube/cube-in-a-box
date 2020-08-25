@@ -10,12 +10,12 @@ up:
 init:
 	docker-compose exec jupyter datacube -v system init
 
-# 3. Add a product definition for landsat level 1
+# 3. Add a product definition for Sentinel-2
 product:
 	docker-compose exec jupyter \
 		datacube product add https://raw.githubusercontent.com/digitalearthafrica/config/master/products/esa_s2_l2a.yaml
 
-# 3. Index a dataset (just an example, you can change the extents)
+# 4. Index some data (just an example, you can change the extents)
 index:
 	docker-compose exec jupyter \
 		bash -c \
@@ -26,25 +26,6 @@ index:
 			--datetime='2020-01-01/2020-03-31' \
 			s2_l2a \
 		"
-
-metadata:
-	docker-compose exec jupyter \
-		datacube metadata add https://raw.githubusercontent.com/GeoscienceAustralia/digitalearthau/restore-c3-nbart-product-name/digitalearthau/config/eo3/eo3_landsat_ard.odc-type.yaml
-
-product-c3:
-	docker-compose exec jupyter \
-		bash -c "\
-		datacube product add \
-		https://raw.githubusercontent.com/GeoscienceAustralia/digitalearthau/restore-c3-nbart-product-name/digitalearthau/config/eo3/products/nbart_ls5.odc-product.yaml
-		https://raw.githubusercontent.com/GeoscienceAustralia/digitalearthau/restore-c3-nbart-product-name/digitalearthau/config/eo3/products/nbart_ls7.odc-product.yaml
-		https://raw.githubusercontent.com/GeoscienceAustralia/digitalearthau/restore-c3-nbart-product-name/digitalearthau/config/eo3/products/nbart_ls8.odc-product.yaml\
-		"
-
-index-c3:
-	docker-compose exec jupyter \
-		bash -c "\
-			s3-find s3://dea-public-data-dev/analysis-ready-data/**/*.odc-metadata.yaml --no-sign-request \
-			| s3-to-tar --no-sign-request | dc-index-from-tar --ignore-lineage"
 
 # Some extra commands to help in managing things.
 # Rebuild the image
