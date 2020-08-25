@@ -1,5 +1,5 @@
 # Cube in a Box
-The Cube in a Box is a simple way to run the [Open Data Cube](https://opendatacube.com).
+The Cube in a Box is a simple way to run the [Open Data Cube](https://www.opendatacube.org).
  
 # How to use:
 _If you have `make` installed you can use it to save some typing using the instructions a little further down._
