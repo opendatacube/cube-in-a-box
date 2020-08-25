@@ -4,7 +4,8 @@ name: Docker
 on:
   push:
     branches:
-      - main,update-cloud-formation
+      - main
+      - update-cloud-formation
     paths:
       - "**"
 
