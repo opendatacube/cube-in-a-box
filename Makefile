@@ -7,21 +7,25 @@ up:
 	docker-compose up
 
 # 2. Prepare the database
-initdb:
+init:
 	docker-compose exec jupyter datacube -v system init
 
-# 3. Add a product definition for landsat level 1
+# 3. Add a product definition for Sentinel-2
 product:
-	docker-compose exec jupyter datacube product add \
-		https://raw.githubusercontent.com/opendatacube/datacube-dataset-config/master/products/ls_usgs_level1_scene.yaml
+	docker-compose exec jupyter \
+		datacube product add https://raw.githubusercontent.com/digitalearthafrica/config/master/products/esa_s2_l2a.yaml
 
-# 3. Index a dataset (just an example, you can change the extents)
+# 4. Index some data (just an example, you can change the extents)
 index:
-	docker-compose exec jupyter bash -c \
-		"cd /opt/odc/scripts && python3 ./autoIndex.py \
-			--start_date '2019-01-01' \
-			--end_date '2020-01-01' \
-			--extents '146.30,146.83,-43.54,-43.20'"
+	docker-compose exec jupyter \
+		bash -c \
+		" \
+			stac-to-dc \
+			--bbox='25,20,35,30' \
+			--collections='sentinel-s2-l2a-cogs' \
+			--datetime='2020-01-01/2020-03-31' \
+			s2_l2a \
+		"
 
 # Some extra commands to help in managing things.
 # Rebuild the image

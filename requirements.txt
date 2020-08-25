@@ -1,19 +1,29 @@
-# s3/boto, let aiobotocore decide botocore/boto3/awscli versions
-aiobotocore[boto3,awscli]==0.11.1
-python-dateutil==2.8.0
-matplotlib
-click
-scikit-image
-ruamel.yaml
-jupyter
-folium
-packaging
-gdal
-# git+git://github.com/sat-utils/sat-search@0.3.0-b2
-sat-search==0.2.2
-
---extra-index-url="https://packages.dea.ga.gov.au"
-datacube[performance,s3]
-odc-apps-cloud[GCP,THREDDS]
-odc-apps-dc-tools
+--extra-index-url https://packages.dea.ga.gov.au/
+aiohttp
+aiobotocore[boto3,awscli]==1.0.7
+pyyaml==5.3.1
+wget
+requests
+datacube
+odc-algo
+odc-aws
+odc-aio
+odc-apps-cloud
+odc-ui
 odc-index
+# Pinned for Alex to index STAC.
+sat-search==0.3.0
+# We really should publish this as a package.
+git+https://github.com/opendatacube/datacube-index.git
+# Jupyter components.
+gdal
+scipy
+jupyter==1.0.0
+ipyleaflet==0.13.0
+folium
+pandas==1.0.5
+xarray==0.16.0
+matplotlib==3.2.1
+geopandas
+scikit-image
+tqdm

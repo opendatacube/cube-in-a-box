@@ -2,7 +2,7 @@ version: '3'
 
 services:
   postgres:
-    image: kartoza/postgis:11.0-2.5
+    image: postgis/postgis:10-2.5
     environment:
       - POSTGRES_DB=opendatacube
       - POSTGRES_PASSWORD=opendatacubepassword
@@ -19,11 +19,10 @@ services:
       - DB_PASSWORD=opendatacubepassword
       - DB_DATABASE=opendatacube
       - AWS_NO_SIGN_REQUEST=true
+      - STAC_API_URL=https://earth-search.aws.element84.com/v0/
     ports:
       - "80:8888"
     volumes:
-      - ./scripts:/opt/odc/scripts
-      - ./data:/opt/odc/data
       - ./notebooks:/notebooks
     restart: always
     command: jupyter notebook --allow-root --ip="0.0.0.0" --NotebookApp.token='secretpassword'
