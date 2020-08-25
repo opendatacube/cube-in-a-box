@@ -1,0 +1,5 @@
+version: '3'
+
+services:
+  jupyter:
+    image: opendatacube/cube-in-a-box:latest
