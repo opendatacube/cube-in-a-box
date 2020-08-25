@@ -20,7 +20,7 @@ Parameters:
   ExtentToIndex:
     Description: An extent to index for use in the Cube in a Box
     Type: String
-    Default: '146.30,146.83,-43.54,-43.20'
+    Default: '25,20,35,30'
   SecretPassword:
     Description: Password to open up the Jupyter notebook
     Type: String
@@ -28,7 +28,7 @@ Parameters:
   EC2InstanceName:
     Description: The name of the Cube in a Box EC2 instance
     Type: String
-    Default: 'CubeInABox'
+    Default: 'Cube-in-a-Box'
   SSHLocation:
     Description: The IP address range that can be used to access the Cube in a Box
     Type: String
@@ -77,11 +77,9 @@ Resources:
           unzip /tmp/archive.zip
           mv cube-in-a-box-master /opt/odc
           # We need to remove some local vars. This is a bit of a hack...
-          sed --in-place '/AWS_/d' /opt/odc/docker-compose.yml
           sed --in-place 's/secretpassword/${SecretPassword}/g' /opt/odc/docker-compose.yml
           # We need write access in these places
           chmod -R 777 /opt/odc/notebooks
-          chmod -R 777 /opt/odc/data
           cd /opt/odc
           # Start the machines
           sudo docker-compose pull
@@ -91,8 +89,8 @@ Resources:
           # Initialise and load a product, and then some data
           # Note to future self, we can't use make here because of TTY interactivity (the -T flag)
           docker-compose exec -T jupyter datacube -v system init
-          docker-compose exec -T jupyter datacube product add https://raw.githubusercontent.com/opendatacube/datacube-dataset-config/master/products/ls_usgs_level1_scene.yaml
-          docker-compose exec -T jupyter bash -c "cd /opt/odc/scripts && python3 ./autoIndex.py --extents ${ExtentToIndex}"
+          docker-compose exec -T jupyter datacube product add https://raw.githubusercontent.com/digitalearthafrica/config/master/products/esa_s2_l2a.yaml
+          docker-compose exec -T jupyter bash -c "stac-to-dc --bbox=${ExtentToIndex} --collections='sentinel-s2-l2a-cogs' --datetime='2020-01-01/2020-03-31' s2_l2a"
       Tags:
         - Key:   "Name"
           Value: !Ref 'EC2InstanceName'
