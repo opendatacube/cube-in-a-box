@@ -1,0 +1,35 @@
+---
+name: Docker
+
+on:
+  push:
+    branches:
+      - main,update-cloud-formation
+    paths:
+      - "**"
+
+  release:
+    types:
+      - created
+
+env:
+  IMAGE_NAME: opendatacube/cube-in-a-box
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' || github.event_name == 'release'
+
+    steps:
+      - name: Checkout git
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Build and Push latest Docker image tag
+        uses: whoan/docker-build-with-cache-action@v4
+        with:
+          image_name: ${{ env.IMAGE_NAME }}
+          username: gadockersvc
+          image_tag: latest
+          password: "${{ secrets.DockerPassword }}"

@@ -45,6 +45,15 @@ clear:
 upload-s3:
 	aws s3 cp cube-in-a-box-cloudformation.yml s3://opendatacube-cube-in-a-box/ --acl public-read
 
+build-image:
+	docker build --tag opendatacube/cube-in-a-box .
+
+push-image:
+	docker push opendatacube/cube-in-a-box
+
+up-prod:
+	docker-compose -f docker-compose.yml -f docker-compose-prod.yml up 
+
 # This section can be used to deploy onto CloudFormation instead of the 'magic link'
 create-infra:
 	aws cloudformation create-stack \
