@@ -82,15 +82,15 @@ Resources:
           chmod -R 777 /opt/odc/notebooks
           cd /opt/odc
           # Start the machines
-          sudo docker-compose pull
-          sudo docker-compose up -d
+          alias dc='sudo docker-compose -f docker-compose.yml -f docker-compose-prod.yml'
+          dc up -d
           # Wait for them to wake up
           sleep 15
           # Initialise and load a product, and then some data
           # Note to future self, we can't use make here because of TTY interactivity (the -T flag)
-          docker-compose exec -T jupyter datacube -v system init
-          docker-compose exec -T jupyter datacube product add https://raw.githubusercontent.com/digitalearthafrica/config/master/products/esa_s2_l2a.yaml
-          docker-compose exec -T jupyter bash -c "stac-to-dc --bbox=${ExtentToIndex} --collections='sentinel-s2-l2a-cogs' --datetime='2020-01-01/2020-03-31' s2_l2a"
+          dc exec -T jupyter datacube -v system init
+          dc exec -T jupyter datacube product add https://raw.githubusercontent.com/digitalearthafrica/config/master/products/esa_s2_l2a.yaml
+          dc exec -T jupyter bash -c "stac-to-dc --bbox=${ExtentToIndex} --collections='sentinel-s2-l2a-cogs' --datetime='2020-01-01/2020-03-31' s2_l2a"
       Tags:
         - Key:   "Name"
           Value: !Ref 'EC2InstanceName'
