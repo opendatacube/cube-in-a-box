@@ -47,4 +47,4 @@ If you are unfamiliar with AWS, this detailed guide can help you set up an AWS a
 * If these are successful, you will be taken to the Stack manager. Note the Filter “Active” option can be changed to see In Progress or Failed stacks.
 * Click on the “Outputs” tab to see the publicDNS of your EC2 server, which can be navigated to in your browser. This contains your Jupyter server. It may take a minute or two for Jupyter to prepare itself (no more than 5 minutes). Your password will be the secretpassword you set earlier, or simply `secretpassword`.
 
-You should now see several notebook files, which can be run, editted and examined.
+You should now see several notebook files, which can be run, edited and examined.
