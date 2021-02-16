@@ -13,7 +13,7 @@ init:
 # 3. Add a product definition for Sentinel-2
 product:
 	docker-compose exec jupyter \
-		datacube product add https://raw.githubusercontent.com/digitalearthafrica/config/master/products/esa_s2_l2a.yaml
+		datacube product add https://raw.githubusercontent.com/digitalearthafrica/config/master/products/esa_s2_l2a.odc-product.yaml
 
 # 4. Index some data (just an example, you can change the extents)
 index:
