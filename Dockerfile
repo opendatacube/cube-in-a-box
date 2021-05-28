@@ -8,7 +8,7 @@ COPY requirements.txt /conf/
 RUN env-build-tool new /conf/requirements.txt ${py_env_path} /wheels
 
 FROM opendatacube/geobase:runner-3.0.4
-ARG py_env_path
+ARG py_env_path=/env
 
 COPY --chown=1000:100 --from=env_builder $py_env_path $py_env_path
 COPY --from=env_builder /bin/tini /bin/tini
