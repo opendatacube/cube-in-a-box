@@ -13,7 +13,10 @@ init:
 # 3. Add a product definition for Sentinel-2
 product:
 	docker-compose exec jupyter \
-		datacube product add https://raw.githubusercontent.com/digitalearthafrica/config/master/products/esa_s2_l2a.odc-product.yaml
+		datacube product add \
+			https://raw.githubusercontent.com/digitalearthafrica/config/master/products/esa_s2_l2a.odc-product.yaml \
+			https://raw.githubusercontent.com/opendatacube/datacube-dataset-config/master/products/esri_land_cover.yaml
+
 
 # 4. Index some data (just an example, you can change the extents)
 index:
@@ -25,6 +28,7 @@ index:
 			--collections='sentinel-s2-l2a-cogs' \
 			--datetime='2020-01-01/2020-03-31' \
 			s2_l2a \
+			&& esri-lc-to-dc \
 		"
 
 # Some extra commands to help in managing things.

@@ -2,7 +2,7 @@ version: '3'
 
 services:
   postgres:
-    image: postgis/postgis:10-2.5
+    image: postgis/postgis:12-2.5
     environment:
       - POSTGRES_DB=opendatacube
       - POSTGRES_PASSWORD=opendatacubepassword

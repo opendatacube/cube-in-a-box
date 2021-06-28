@@ -17,8 +17,8 @@ RUN export GDAL_DATA=$(gdal-config --datadir)
 ENV LC_ALL=C.UTF-8 \
     PATH="/env/bin:$PATH"
 
-RUN useradd -m -s /bin/bash -N jovyan -g 100 -u 1000
-USER jovyan
+# RUN useradd -m -s /bin/bash -N jovyan -g 100 -u 1000
+# USER jovyan
 
 WORKDIR /notebooks
 
