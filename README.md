@@ -12,7 +12,7 @@ All you need to know:
   * `docker-compose exec jupyter datacube -v system init`
   * `docker-compose exec jupyter datacube product add https://raw.githubusercontent.com/digitalearthafrica/config/master/products/esa_s2_l2a.odc-product.yaml`
 * Index a default region with either:
-  * `docker-compose exec jupyter bash -c "stac-to-dc --bbox='25,20,35,30' --collections='sentinel-s2-l2a-cogs' --datetime='2020-01-01/2020-03-31' s2_l2a"`
+  * `docker-compose exec jupyter bash -c "stac-to-dc --bbox='25,20,35,30' --collections='sentinel-s2-l2a-cogs' --datetime='2020-01-01/2020-03-31'"`
 * Shutdown your local environment:
 * `docker-compose down`
 
