@@ -1,24 +1,25 @@
 
-FROM opendatacube/geobase:wheels-3.0.4  as env_builder
+FROM osgeo/gdal:ubuntu-small-3.3.1
 
-ARG py_env_path=/env
+ENV DEBIAN_FRONTEND=noninteractive \
+    LC_ALL=C.UTF-8 \
+    LANG=C.UTF-8
+
+RUN apt-get update && \
+    apt-get install -y \
+      build-essential \
+      fish \
+      git \
+      # For Psycopg2
+      libpq-dev python-dev \
+      python3-pip \
+      tini \
+      wget \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /conf
 COPY requirements.txt /conf/
-RUN env-build-tool new /conf/requirements.txt ${py_env_path} /wheels
-
-FROM opendatacube/geobase:runner-3.0.4
-ARG py_env_path=/env
-
-COPY --chown=1000:100 --from=env_builder $py_env_path $py_env_path
-COPY --from=env_builder /bin/tini /bin/tini
-
-RUN export GDAL_DATA=$(gdal-config --datadir)
-ENV LC_ALL=C.UTF-8 \
-    PATH="/env/bin:$PATH"
-
-# RUN useradd -m -s /bin/bash -N jovyan -g 100 -u 1000
-# USER jovyan
+RUN pip install -r /conf/requirements.txt
 
 WORKDIR /notebooks
 
