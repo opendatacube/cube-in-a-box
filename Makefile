@@ -15,7 +15,8 @@ product:
 	docker-compose exec jupyter \
 		datacube product add \
 			https://raw.githubusercontent.com/digitalearthafrica/config/master/products/esa_s2_l2a.odc-product.yaml \
-			https://raw.githubusercontent.com/opendatacube/datacube-dataset-config/master/products/io_lulc.odc-product.yaml
+			https://raw.githubusercontent.com/opendatacube/datacube-dataset-config/master/products/io_lulc.odc-product.yaml \
+			https://raw.githubusercontent.com/opendatacube/datacube-dataset-config/master/products/nasadem.odc-product.yaml
 
 
 # 4. Index some data (just an example, you can change the extents)
@@ -24,14 +25,18 @@ index:
 		bash -c \
 		" \
 			stac-to-dc \
-			--catalog-href=https://earth-search.aws.element84.com/v0/ \
-			--bbox='25,20,35,30' \
-			--collections='sentinel-s2-l2a-cogs' \
-			--datetime='2020-01-01/2020-03-31' \
+				--bbox='25,20,35,30' \
+				--catalog-href='https://earth-search.aws.element84.com/v0/' \
+				--collections='sentinel-s2-l2a-cogs' \
+				--datetime='2021-06-01/2021-07-01' \
 			&& \
 			stac-to-dc \
-			--catalog-href=https://planetarycomputer.microsoft.com/api/stac/v1/ \
-			--collections='io-lulc' \
+				--catalog-href=https://planetarycomputer.microsoft.com/api/stac/v1/ \
+				--collections='io-lulc' \
+			&& stac-to-dc \
+				--catalog-href='https://planetarycomputer.microsoft.com/api/stac/v1/' \
+				--collections='nasadem' \
+				--bbox='25,20,35,30' \
 		"
 
 # Some extra commands to help in managing things.
