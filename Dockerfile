@@ -21,7 +21,8 @@ RUN apt-get update && \
 
 RUN mkdir -p /conf
 COPY requirements.txt /conf/
-RUN pip install -r /conf/requirements.txt
+RUN pip install -r /conf/requirements.txt \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /notebooks
 
