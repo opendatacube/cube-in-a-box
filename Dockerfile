@@ -15,7 +15,9 @@ RUN apt-get update && \
       python3-pip \
       tini \
       wget \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get autoclean && \
+    apt-get autoremove && \
+    rm -rf /var/lib/{apt,dpkg,cache,log}
 
 RUN mkdir -p /conf
 COPY requirements.txt /conf/
