@@ -12,8 +12,6 @@ odc-apps-cloud
 odc-apps-dc-tools
 odc-ui
 odc-index
-# Pinned for Alex to index STAC.
-sat-search==0.3.0
 # Jupyter components.
 gdal
 scipy

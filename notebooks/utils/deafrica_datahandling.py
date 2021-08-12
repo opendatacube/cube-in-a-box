@@ -35,7 +35,7 @@ Last modified: March 2020
 
 # Import required packages
 import os
-import gdal
+from osgeo import gdal
 import requests
 import zipfile
 import warnings
@@ -50,10 +50,6 @@ from datacube.utils import masking
 from scipy.ndimage import binary_dilation
 from copy import deepcopy
 import odc.algo
-from random import randint
-import numexpr as ne
-import dask
-import dask.array as da
 
 
 def _dc_query_only(**kw):
