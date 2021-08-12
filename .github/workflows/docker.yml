@@ -30,6 +30,6 @@ jobs:
         uses: whoan/docker-build-with-cache-action@v4
         with:
           image_name: ${{ env.IMAGE_NAME }}
-          username: gadockersvc
           image_tag: latest
-          password: "${{ secrets.DockerPassword }}"
+          username: gadockersvc
+          password: "${{ secrets.GADOCKERSVC_PASSWORD }}"
