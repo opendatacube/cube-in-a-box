@@ -32,4 +32,4 @@ jobs:
           image_name: ${{ env.IMAGE_NAME }}
           image_tag: latest
           username: gadockersvc
-          password: "${{ secrets.GADOCKERSVC_PASSWORD }}"
+          password: ${{ secrets.GADOCKERSVC_PASSWORD }}
