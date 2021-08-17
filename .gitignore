@@ -17,3 +17,5 @@ notebooks/.local/
 notebooks/.bash_history
 notebooks/.python_history
 .env
+data
+__pycache__

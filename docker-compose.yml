@@ -7,10 +7,12 @@ services:
       - POSTGRES_DB=opendatacube
       - POSTGRES_PASSWORD=opendatacubepassword
       - POSTGRES_USER=opendatacube
+    volumes:
+      - ./data/pg:/var/lib/postgresql/data
     ports:
       - 5432:5432
     restart: always
-  
+
   jupyter:
     build: .
     environment:
@@ -19,9 +21,19 @@ services:
       - DB_PASSWORD=opendatacubepassword
       - DB_DATABASE=opendatacube
       - AWS_NO_SIGN_REQUEST=true
+      - CIABPASSWORD=${CIABPASSWORD:-secretpassword}
+    links:
+      - postgres:postgres
     ports:
       - "80:8888"
     volumes:
       - ./notebooks:/notebooks
     restart: always
     command: jupyter notebook --allow-root --ip="0.0.0.0" --NotebookApp.token='secretpassword'
+  checkdb:
+    image: schaffdev/port_check:latest
+    environment:
+      - CHECK_HOST=postgres
+      - CHECK_PORT=5432
+    links:
+      - postgres:postgres
