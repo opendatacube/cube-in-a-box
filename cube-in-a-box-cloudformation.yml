@@ -78,7 +78,8 @@ Resources:
           wget https://github.com/opendatacube/cube-in-a-box/archive/refs/heads/main.zip -O $HOME/archive.zip
           unzip $HOME/archive.zip
           bash $HOME/cube-in-a-box-main/setup.sh
-          CIABPASSWORD=${SecretPassword} make -C $HOME/cube-in-a-box-main setup
+          echo 'CIABPASSWORD=${SecretPassword}' > $HOME/cube-in-a-box-main/.env
+          sudo make -C $HOME/cube-in-a-box-main setup
       Tags:
         - Key: "Name"
           Value: !Ref "EC2InstanceName"
