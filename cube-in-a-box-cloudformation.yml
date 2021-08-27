@@ -74,12 +74,12 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash -ex
-          apt-get update && apt-get -y install wget
+          apt-get update && apt-get install -y wget unzip
           wget https://github.com/opendatacube/cube-in-a-box/archive/refs/heads/main.zip -O $HOME/archive.zip
           unzip $HOME/archive.zip
           bash $HOME/cube-in-a-box-main/setup.sh
           echo 'CIABPASSWORD=${SecretPassword}' > $HOME/cube-in-a-box-main/.env
-          sudo make -C $HOME/cube-in-a-box-main setup
+          make -C $HOME/cube-in-a-box-main setup
       Tags:
         - Key: "Name"
           Value: !Ref "EC2InstanceName"

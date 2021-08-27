@@ -3,6 +3,7 @@
 ##
 ## Once running, you can access a Jupyter environment
 ## at 'http://localhost' with password 'secretpassword'
+.PHONY: help setup up down clean
 
 BBOX := 25,20,35,30
 
