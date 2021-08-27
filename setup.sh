@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-
-bash scripts/install-system-requirements.sh
-bash scripts/install-docker.sh
+base="$(dirname "$0")"
+bash "$base/scripts/install-system-requirements.sh"
+bash "$base/scripts/install-docker.sh"

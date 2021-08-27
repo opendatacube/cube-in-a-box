@@ -10,7 +10,7 @@ if hash dnf 2>/dev/null; then
   return
 fi
 
-if hash yum 2/dev/null; then
+if hash yum 2>/dev/null; then
   sudo yum install -y make
   return
 fi
