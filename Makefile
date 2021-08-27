@@ -22,11 +22,7 @@ init: ## 2. Prepare the database
 	docker-compose exec jupyter datacube -v system init
 
 product: ## 3. Add a product definition for Sentinel-2
-	docker-compose exec jupyter \
-		datacube product add \
-			https://raw.githubusercontent.com/digitalearthafrica/config/master/products/esa_s2_l2a.odc-product.yaml \
-			https://raw.githubusercontent.com/opendatacube/datacube-dataset-config/master/products/io_lulc.odc-product.yaml \
-			https://raw.githubusercontent.com/opendatacube/datacube-dataset-config/master/products/nasadem.odc-product.yaml
+	docker-compose exec jupyter dc-sync-products /conf/products.csv
 
 
 index: ## 4. Index some data (Change extents with BBOX='<left>,<bottom>,<right>,<top>')

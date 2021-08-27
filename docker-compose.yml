@@ -28,6 +28,7 @@ services:
       - "80:8888"
     volumes:
       - ./notebooks:/notebooks
+      - ./products.csv:/products.csv
     restart: always
     command: jupyter notebook --allow-root --ip="0.0.0.0" --NotebookApp.token='secretpassword'
   checkdb:

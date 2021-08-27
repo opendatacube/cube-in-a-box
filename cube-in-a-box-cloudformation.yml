@@ -74,7 +74,7 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash -ex
-          apt-get update && apt-get -y install make wget
+          apt-get update && apt-get -y install wget
           wget https://github.com/opendatacube/cube-in-a-box/archive/refs/heads/main.zip -O $HOME/archive.zip
           unzip $HOME/archive.zip
           bash $HOME/cube-in-a-box-main/setup.sh

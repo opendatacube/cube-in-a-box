@@ -19,6 +19,7 @@ RUN apt-get update && \
     && rm -rf /var/lib/{apt,dpkg,cache,log}
 
 COPY requirements.txt /conf/
+COPY products.csv /conf/
 RUN pip3 install --requirement /conf/requirements.txt \
       && rm -rf /root/.cache
 
