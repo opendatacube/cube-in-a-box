@@ -75,17 +75,17 @@ up-prod: ## Bring up production version
 # This section can be used to deploy onto CloudFormation instead of the 'magic link'
 create-infra:
 	aws cloudformation create-stack \
-		--region ap-southeast-2 \
+		--region eu-west-1 \
 		--stack-name odc-test \
-		--template-body file://opendatacube-test.yml \
+		--template-body file://cube-in-a-box-cloudformation.yml \
 		--parameter file://parameters.json \
 		--tags Key=Name,Value=OpenDataCube \
 		--capabilities CAPABILITY_NAMED_IAM
 
 update-infra:
 	aws cloudformation update-stack \
-		--stack-name odc-test \
-		--template-body file://opendatacube-test.yml \
+		--stack-name eu-west-1 \
+		--template-body file://cube-in-a-box-cloudformation.yml \
 		--parameter file://parameters.json \
 		--tags Key=Name,Value=OpenDataCube \
 		--capabilities CAPABILITY_NAMED_IAM

@@ -51,9 +51,11 @@ Parameters:
     Description: The AWS region to deploy in
     Type: String
     Default: us-west-2
-    AllowedValues: [us-west-2, ap-southeast-2]
+    AllowedValues: [eu-west-1, us-west-2, ap-southeast-2]
 Mappings:
   RegionMap:
+    eu-west-1:
+      "HVM64": "ami-0ae0cb89fc578cd9c"
     us-west-2:
       "HVM64": "ami-04ef7170e45541f07"
     ap-southeast-2:
@@ -74,12 +76,15 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash -ex
+          export DEBIAN_FRONTEND=noninteractive
           apt-get update && apt-get install -y wget unzip
-          wget https://github.com/opendatacube/cube-in-a-box/archive/refs/heads/main.zip -O $HOME/archive.zip
-          unzip $HOME/archive.zip
-          bash $HOME/cube-in-a-box-main/setup.sh
-          echo 'CIABPASSWORD=${SecretPassword}' > $HOME/cube-in-a-box-main/.env
-          make -C $HOME/cube-in-a-box-main setup
+          #wget https://github.com/opendatacube/cube-in-a-box/archive/refs/heads/main.zip -O $HOME/archive.zip
+          wget https://github.com/opendatacube/cube-in-a-box/archive/refs/heads/feature/upgrade-build-process.zip -O /home/ubuntu/archive.zip
+          unzip /home/ubuntu/archive.zip -d /home/ubuntu
+          mv /home/ubuntu/cube-in-a-box-feature-upgrade-build-process /home/ubuntu/cube-in-a-box-main
+          DEBIAN_FRONTEND=noninteractive bash /home/ubuntu/cube-in-a-box-main/setup.sh
+          echo 'CIABPASSWORD=${SecretPassword}' > /home/ubuntu/cube-in-a-box-main/.env
+          make -C /home/ubuntu/cube-in-a-box-main setup
       Tags:
         - Key: "Name"
           Value: !Ref "EC2InstanceName"

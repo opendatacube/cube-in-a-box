@@ -13,7 +13,11 @@
     },
     {
       "ParameterKey": "SecretPassword",
-      "ParameterValue": "anothersecretpassword"
+      "ParameterValue": "anothersecretpassword123"
+    },
+    {
+      "ParameterKey": "Region",
+      "ParameterValue": "eu-west-1"
     }
   ]
-  
+
