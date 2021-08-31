@@ -15,9 +15,9 @@ help: ## Print this help
 setup: build up init product index ## Run a full setup, or manually run the following 4 steps
 
 up: ## 1. Bring up your Docker environment
-	docker-compose up --detach postgres
+	docker-compose up -d postgres
 	docker-compose run checkdb
-	docker-compose up --detach jupyter
+	docker-compose up -d jupyter
 
 init: ## 2. Prepare the database
 	docker-compose exec jupyter datacube -v system init
