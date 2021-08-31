@@ -82,7 +82,7 @@ Resources:
           wget https://github.com/opendatacube/cube-in-a-box/archive/refs/heads/feature/upgrade-build-process.zip -O /home/ubuntu/archive.zip
           unzip /home/ubuntu/archive.zip -d /home/ubuntu
           mv /home/ubuntu/cube-in-a-box-feature-upgrade-build-process /home/ubuntu/cube-in-a-box-main
-          DEBIAN_FRONTEND=noninteractive bash /home/ubuntu/cube-in-a-box-main/setup.sh
+          bash /home/ubuntu/cube-in-a-box-main/setup.sh
           echo 'CIABPASSWORD=${SecretPassword}' > /home/ubuntu/cube-in-a-box-main/.env
           make -C /home/ubuntu/cube-in-a-box-main setup
       Tags:
