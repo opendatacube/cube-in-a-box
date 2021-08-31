@@ -16,7 +16,6 @@ install_docker_ubuntu() {
   sudo apt-get install -y --force-yes docker-ce docker-ce-cli containerd.io docker-compose
 
   sudo service docker start
-  sudo usermod -aG docker $USER
 }
 
 install_docker_fedora() {
