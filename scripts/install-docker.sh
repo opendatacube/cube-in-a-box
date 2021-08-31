@@ -2,7 +2,7 @@
 
 install_docker_ubuntu() {
   # Copied from : https://docs.docker.com/engine/install/ubuntu/
-
+  export DEBIAN_FRONTEND=noninteractive
   sudo apt-get remove -y --force-yes docker docker-engine docker.io containerd runc
 
   sudo apt-get update
