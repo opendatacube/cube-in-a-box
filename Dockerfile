@@ -3,7 +3,8 @@ FROM osgeo/gdal:ubuntu-small-3.3.1
 ENV DEBIAN_FRONTEND=noninteractive \
     LC_ALL=C.UTF-8 \
     LANG=C.UTF-8 \
-    TINI_VERSION=v0.19.0
+    TINI_VERSION=v0.19.0 \
+    CIABPASSWORD=secretpassword
 
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini
@@ -28,4 +29,4 @@ WORKDIR /notebooks
 
 ENTRYPOINT ["/tini", "--"]
 
-CMD ["jupyter", "notebook", "--allow-root", "--ip='0.0.0.0'", "--NotebookApp.token='secretpassword'"]
+CMD ["jupyter", "notebook", "--allow-root", "--ip='0.0.0.0'", "--NotebookApp.token=\"$CIABPASSWORD\""]

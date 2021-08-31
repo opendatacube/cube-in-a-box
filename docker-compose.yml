@@ -30,7 +30,6 @@ services:
       - ./notebooks:/notebooks
       - ./products.csv:/products.csv
     restart: always
-    command: jupyter notebook --allow-root --ip="0.0.0.0" --NotebookApp.token='secretpassword'
   checkdb:
     image: schaffdev/port_check:latest
     environment:
