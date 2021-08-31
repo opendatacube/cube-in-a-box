@@ -84,6 +84,7 @@ Resources:
           mv /home/ubuntu/cube-in-a-box-feature-upgrade-build-process /home/ubuntu/cube-in-a-box-main
           bash /home/ubuntu/cube-in-a-box-main/setup.sh
           echo 'CIABPASSWORD=${SecretPassword}' > /home/ubuntu/cube-in-a-box-main/.env
+          cd /home/ubuntu/cube-in-a-box-main
           make -C /home/ubuntu/cube-in-a-box-main setup
       Tags:
         - Key: "Name"

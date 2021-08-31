@@ -20,24 +20,24 @@ up: ## 1. Bring up your Docker environment
 	docker-compose up -d jupyter
 
 init: ## 2. Prepare the database
-	docker-compose exec jupyter datacube -v system init
+	docker-compose exec -T jupyter datacube -v system init
 
 product: ## 3. Add a product definition for Sentinel-2
-	docker-compose exec jupyter dc-sync-products /conf/products.csv
+	docker-compose exec -T jupyter dc-sync-products /conf/products.csv
 
 
 index: ## 4. Index some data (Change extents with BBOX='<left>,<bottom>,<right>,<top>')
-	docker-compose exec jupyter bash -c \
+	docker-compose exec -T jupyter bash -c \
 		"stac-to-dc \
 			--bbox='$(BBOX)' \
 			--catalog-href='https://earth-search.aws.element84.com/v0/' \
 			--collections='sentinel-s2-l2a-cogs' \
 			--datetime='2021-06-01/2021-07-01'"
-	docker-compose exec jupyter bash -c \
+	docker-compose exec -T jupyter bash -c \
 		"stac-to-dc \
 			--catalog-href=https://planetarycomputer.microsoft.com/api/stac/v1/ \
 			--collections='io-lulc'"
-	docker-compose exec jupyter bash -c \
+	docker-compose exec -T jupyter bash -c \
 		"stac-to-dc \
 			--catalog-href='https://planetarycomputer.microsoft.com/api/stac/v1/' \
 			--collections='nasadem' \
