@@ -83,7 +83,7 @@ Resources:
           unzip /home/ubuntu/archive.zip -d /home/ubuntu
           mv /home/ubuntu/cube-in-a-box-feature-upgrade-build-process /home/ubuntu/cube-in-a-box-main
           bash /home/ubuntu/cube-in-a-box-main/setup.sh
-          echo "CIABPASSWORD=${SecretPassword}" > /home/ubuntu/cube-in-a-box-main/.env
+          sed --in-place "s/secretpassword/${SecretPassword}/g" /home/ubuntu/cube-in-a-box-main/Dockerfile
           make -C /home/ubuntu/cube-in-a-box-main setup
       Tags:
         - Key: "Name"
