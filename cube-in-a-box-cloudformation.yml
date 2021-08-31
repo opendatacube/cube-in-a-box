@@ -78,13 +78,12 @@ Resources:
           #!/bin/bash -ex
           export DEBIAN_FRONTEND=noninteractive
           apt-get update && apt-get install -y wget unzip
-          #wget https://github.com/opendatacube/cube-in-a-box/archive/refs/heads/main.zip -O $HOME/archive.zip
-          wget https://github.com/opendatacube/cube-in-a-box/archive/refs/heads/feature/upgrade-build-process.zip -O /home/ubuntu/archive.zip
+          wget https://github.com/opendatacube/cube-in-a-box/archive/refs/heads/main.zip -O /home/ubuntu/archive.zip
           unzip /home/ubuntu/archive.zip -d /home/ubuntu
           mv /home/ubuntu/cube-in-a-box-feature-upgrade-build-process /home/ubuntu/cube-in-a-box-main
           bash /home/ubuntu/cube-in-a-box-main/setup.sh
           sed --in-place "s/secretpassword/${SecretPassword}/g" /home/ubuntu/cube-in-a-box-main/Dockerfile
-          make -C /home/ubuntu/cube-in-a-box-main setup
+          make -C /home/ubuntu/cube-in-a-box-main setup BBOX="${ExtentToIndex}"
       Tags:
         - Key: "Name"
           Value: !Ref "EC2InstanceName"

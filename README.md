@@ -7,12 +7,14 @@ The Cube in a Box is a simple way to run the [Open Data Cube](https://www.openda
 ### 1. Setup:
 _First time users of Docker should run:_
 * `bash setup.sh` - This will get your system running and install everything you need.
+* Note that after this step you will either need to logout/login, or run the next step with `sudo`
 
 *If you already have `make` , `docker` and `docker-compose` installed*
 * `make setup`
 
 *If you do not have `make` installed and would rather run the commands individually run the following:*
 
+* Build a local environment: `docker-compose build`
 * Start a local environment: `docker-compose up`
 * Set up your local postgres database (after the above has finished) using:
   * `docker-compose exec jupyter datacube -v system init`
