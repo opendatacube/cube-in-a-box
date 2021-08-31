@@ -6,7 +6,7 @@ install_docker_ubuntu() {
   sudo apt-get remove -y --force-yes docker docker-engine docker.io containerd runc
 
   sudo apt-get update
-  sudo apt-get install -y --force-yes apt-transport-https ca-certificates curl gnupg lsb-release
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes apt-transport-https ca-certificates curl gnupg lsb-release
 
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
