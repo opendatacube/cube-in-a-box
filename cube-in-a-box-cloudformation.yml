@@ -81,8 +81,8 @@ Resources:
           wget https://github.com/opendatacube/cube-in-a-box/archive/refs/heads/main.zip -O /home/ubuntu/archive.zip
           unzip /home/ubuntu/archive.zip -d /home/ubuntu
           bash /home/ubuntu/cube-in-a-box-main/setup.sh
-          sed --in-place "s/secretpassword/${SecretPassword}/g" /home/ubuntu/cube-in-a-box-main/Dockerfile
-          make -C /home/ubuntu/cube-in-a-box-main setup BBOX="${ExtentToIndex}"
+          echo 'CIABPASSWORD=${SecretPassword}' > /home/ubuntu/cube-in-a-box-main/.env
+          make -C /home/ubuntu/cube-in-a-box-main setup-prod BBOX="${ExtentToIndex}"
       Tags:
         - Key: "Name"
           Value: !Ref "EC2InstanceName"
