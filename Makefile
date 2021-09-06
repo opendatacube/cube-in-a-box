@@ -13,7 +13,7 @@ help: ## Print this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-10s\033[0m %s\n", $$1, $$2}'
 
 setup: build up init product index ## Run a full local/development setup
-setup-prod: up-prod init product index ## Run full production setup
+setup-prod: up-prod init product index ## Run a full production setup
 
 up: ## 1. Bring up your Docker environment
 	docker-compose up -d postgres
