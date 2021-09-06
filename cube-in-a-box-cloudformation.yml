@@ -6,7 +6,7 @@ Parameters:
   KeyName:
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
     Type: AWS::EC2::KeyPair::KeyName
-    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+    ConstraintDescription: Must be the name of an existing EC2 KeyPair.
   InstanceType:
     Description: WebServer EC2 instance type
     Type: String
@@ -26,7 +26,7 @@ Parameters:
         r3.large,
         r3.xlarge,
       ]
-    ConstraintDescription: must be a valid EC2 instance type.
+    ConstraintDescription: Must be a valid EC2 instance type.
   ExtentToIndex:
     Description: An extent to index for use in the Cube in a Box
     Type: String
@@ -51,9 +51,11 @@ Parameters:
     Description: The AWS region to deploy in
     Type: String
     Default: us-west-2
-    AllowedValues: [us-west-2, ap-southeast-2]
+    AllowedValues: [eu-west-1, us-west-2, ap-southeast-2]
 Mappings:
   RegionMap:
+    eu-west-1:
+      "HVM64": "ami-0ae0cb89fc578cd9c"
     us-west-2:
       "HVM64": "ami-04ef7170e45541f07"
     ap-southeast-2:
@@ -74,34 +76,13 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash -ex
-          # Install our dependencies
           export DEBIAN_FRONTEND=noninteractive
-          apt-get update && apt-get -y install python-pip
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-          add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-          apt-get update
-          apt-get install -y docker-ce python3-pip unzip wget
-          pip3 install docker-compose
-          # Get our code
-          wget https://github.com/crc-si/cube-in-a-box/archive/master.zip -O /tmp/archive.zip
-          unzip /tmp/archive.zip
-          mv cube-in-a-box-master /opt/odc
-          # We need to remove some local vars. This is a bit of a hack...
-          sed --in-place 's/secretpassword/${SecretPassword}/g' /opt/odc/docker-compose.yml
-          # We need write access in these places
-          chmod -R 777 /opt/odc/notebooks
-          cd /opt/odc
-          # Start the machines
-          sudo docker-compose -f docker-compose.yml -f docker-compose-prod.yml pull
-          sudo docker-compose -f docker-compose.yml -f docker-compose-prod.yml up -d
-          # Wait for them to wake up
-          sleep 15
-          # Initialise and load a product, and then some data
-          # Note to future self, we can't use make here because of TTY interactivity (the -T flag)
-          sudo docker-compose -f docker-compose.yml -f docker-compose-prod.yml exec -T jupyter datacube -v system init
-          sudo docker-compose -f docker-compose.yml -f docker-compose-prod.yml exec -T jupyter datacube product add https://raw.githubusercontent.com/digitalearthafrica/config/master/products/esa_s2_l2a.odc-product.yaml
-          sudo docker-compose -f docker-compose.yml -f docker-compose-prod.yml exec -T jupyter bash -c "stac-to-dc --bbox=${ExtentToIndex} --collections='sentinel-s2-l2a-cogs' --datetime='2020-01-01/2020-03-31' s2_l2a"
-          sudo docker-compose -f docker-compose.yml -f docker-compose-prod.yml exec -T jupyter bash -c "esri-lc-to-dc --add-product"
+          apt-get update && apt-get install -y wget unzip
+          wget https://github.com/opendatacube/cube-in-a-box/archive/refs/heads/main.zip -O /home/ubuntu/archive.zip
+          unzip /home/ubuntu/archive.zip -d /home/ubuntu
+          bash /home/ubuntu/cube-in-a-box-main/setup.sh
+          sed --in-place "s/secretpassword/${SecretPassword}/g" /home/ubuntu/cube-in-a-box-main/Dockerfile
+          make -C /home/ubuntu/cube-in-a-box-main setup BBOX="${ExtentToIndex}"
       Tags:
         - Key: "Name"
           Value: !Ref "EC2InstanceName"

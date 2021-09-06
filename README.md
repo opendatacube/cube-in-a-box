@@ -4,27 +4,27 @@ The Cube in a Box is a simple way to run the [Open Data Cube](https://www.openda
 
 ## How to use:
 
-_If you have `make` installed you can use it to save some typing using the instructions a little further down._
+### 1. Setup:
+_First time users of Docker should run:_
+* `bash setup.sh` - This will get your system running and install everything you need.
+* Note that after this step you will either need to logout/login, or run the next step with `sudo`
 
-All you need to know:
+*If you already have `make` , `docker` and `docker-compose` installed*
+* `make setup`
 
+*If you do not have `make` installed and would rather run the commands individually run the following:*
+
+* Build a local environment: `docker-compose build`
 * Start a local environment: `docker-compose up`
 * Set up your local postgres database (after the above has finished) using:
   * `docker-compose exec jupyter datacube -v system init`
   * `docker-compose exec jupyter datacube product add https://raw.githubusercontent.com/digitalearthafrica/config/master/products/esa_s2_l2a.odc-product.yaml`
-* Index a default region with either:
+* Index a default region with:
   * `docker-compose exec jupyter bash -c "stac-to-dc --bbox='25,20,35,30' --collections='sentinel-s2-l2a-cogs' --datetime='2020-01-01/2020-03-31'"`
 * Shutdown your local environment:
-* `docker-compose down`
+  * `docker-compose down`
 
-If you have `make`:
-
-* Start a local environment using `make up`
-* Set up your local postgres database (after the above has finished) using `make init`
-* Add the Sentinel-2 product definition `make product`
-* Index a default region with `make index`
-  * (optional) Edit the Makefile to change the region of interest
-
+### 2. Usage:
 View the Jupyter notebook `Sentinel_2.ipynb` at [http://localhost](http://localhost) using the password `secretpassword`. Note that you can index additional areas using the `Indexing_More_Data.ipynb` notebook.
 
 ## Deploying to AWS
