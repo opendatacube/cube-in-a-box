@@ -12,7 +12,8 @@ help: ## Print this help
 	@echo
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-10s\033[0m %s\n", $$1, $$2}'
 
-setup: build up init product index ## Run a full setup, or manually run the following 4 steps
+setup: build up init product index ## Run a full local/development setup
+setup-prod: up-prod init product index ## Run a full production setup
 
 up: ## 1. Bring up your Docker environment
 	docker-compose up -d postgres
@@ -70,7 +71,9 @@ push-image:
 
 up-prod: ## Bring up production version
 	docker-compose -f docker-compose-prod.yml pull
-	docker-compose -f docker-compose.yml -f docker-compose-prod.yml up --no-build
+	docker-compose -f docker-compose.yml -f docker-compose-prod.yml up --detach postgres
+	docker-compose run checkdb
+	docker-compose -f docker-compose.yml -f docker-compose-prod.yml up --detach --no-build
 
 # This section can be used to deploy onto CloudFormation instead of the 'magic link'
 create-infra:

@@ -10,7 +10,7 @@ _First time users of Docker should run:_
 * Note that after this step you will either need to logout/login, or run the next step with `sudo`
 
 *If you already have `make` , `docker` and `docker-compose` installed*
-* `make setup`
+* `make setup` or `make setup-prod` (for speed)
 
 *If you do not have `make` installed and would rather run the commands individually run the following:*
 
