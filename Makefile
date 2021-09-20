@@ -5,6 +5,8 @@
 ## at 'http://localhost' with password 'secretpassword'
 .PHONY: help setup up down clean
 
+DEA_GH := https://raw.githubusercontent.com/digitalearthafrica/config/master
+
 BBOX := 25,20,35,30
 
 help: ## Print this help
@@ -12,8 +14,8 @@ help: ## Print this help
 	@echo
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-10s\033[0m %s\n", $$1, $$2}'
 
-setup: build up init product index ## Run a full local/development setup
-setup-prod: up-prod init product index ## Run a full production setup
+setup: build up init products index ## Run a full local/development setup
+setup-prod: up-prod init products index ## Run a full production setup
 
 up: ## 1. Bring up your Docker environment
 	docker-compose up -d postgres
@@ -23,26 +25,37 @@ up: ## 1. Bring up your Docker environment
 init: ## 2. Prepare the database
 	docker-compose exec -T jupyter datacube -v system init
 
-product: ## 3. Add a product definition for Sentinel-2
+products: ## 3. Add a product definition for Sentinel-2
 	docker-compose exec -T jupyter dc-sync-products /conf/products.csv
-
+	docker-compose exec -T jupyter dc-sync-products $(DEA_GH)/prod/products_prod.csv
 
 index: ## 4. Index some data (Change extents with BBOX='<left>,<bottom>,<right>,<top>')
-	docker-compose exec -T jupyter bash -c \
-		"stac-to-dc \
-			--bbox='$(BBOX)' \
-			--catalog-href='https://earth-search.aws.element84.com/v0/' \
-			--collections='sentinel-s2-l2a-cogs' \
-			--datetime='2021-06-01/2021-07-01'"
-	docker-compose exec -T jupyter bash -c \
-		"stac-to-dc \
-			--catalog-href=https://planetarycomputer.microsoft.com/api/stac/v1/ \
-			--collections='io-lulc'"
-	docker-compose exec -T jupyter bash -c \
-		"stac-to-dc \
-			--catalog-href='https://planetarycomputer.microsoft.com/api/stac/v1/' \
-			--collections='nasadem' \
-			--bbox='$(BBOX)'"
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://earth-search.aws.element84.com/v0/ \
+		--bbox=$(BBOX) \
+		--collections=sentinel-s2-l2a-cogs \
+		--datetime=2021-06-01/2021-07-01
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://planetarycomputer.microsoft.com/api/stac/v1/ \
+		--collections=io-lulc
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://planetarycomputer.microsoft.com/api/stac/v1/ \
+		--collections=nasadem \
+		--bbox=$(BBOX)
+
+index-sentinel:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=s2_l2a \
+		--bbox=$(BBOX) \
+		--limit=10
+
+index-landsat:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=ls8_sr \
+		--bbox=$(BBOX) \
+		--datetime=2020-01-01
 
 down: ## Bring down the system
 	docker-compose down
