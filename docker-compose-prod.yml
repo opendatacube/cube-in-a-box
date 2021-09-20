@@ -2,5 +2,5 @@ version: '3'
 
 services:
   jupyter:
-    image: opendatacube/cube-in-a-box:latest
-    command: "jupyter notebook --allow-root --ip='0.0.0.0' -NotebookApp.token='${CIABPASSWORD}'"
+    image: digitalearthafrica/cube-in-a-box:latest
+    command: "jupyter notebook --allow-root --ip='0.0.0.0' -NotebookApp.token='${CIABPASSWORD:-secretpassword}'"

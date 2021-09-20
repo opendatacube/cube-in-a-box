@@ -8,7 +8,7 @@ For most people running the `setup.sh` script will do all the below (except for 
   * Select your current OS from here [Install Docker](https://docs.docker.com/engine/install/) **Note that we currently do not support ARM machines**
   * For Windows and Mac OS X, docker compose comes with Docker Desktop.
   * For Windows make sure that you can run Linux containers.
-2. Get the code for this repository here: [Git ZIP file](https://github.com/opendatacube/cube-in-a-box/archive/refs/heads/main.zip)
+2. Get the code for this repository here: [Git ZIP file](https://github.com/digitalearthafrica/cube-in-a-box/archive/refs/heads/main.zip)
 3. Extract the above ZIP file and go to that directory.
   * For Windows you will need to use PowerShell, by using the `cd` and `dir` commands, for example `cd C:/cubeinabox`.
   * For other OS's you can use your current shell.

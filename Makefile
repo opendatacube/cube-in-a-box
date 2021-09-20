@@ -25,23 +25,8 @@ up: ## 1. Bring up your Docker environment
 init: ## 2. Prepare the database
 	docker-compose exec -T jupyter datacube -v system init
 
-products: ## 3. Add a product definition for Sentinel-2
-	docker-compose exec -T jupyter dc-sync-products /conf/products.csv
+products: ## 3. Add all product definitions
 	docker-compose exec -T jupyter dc-sync-products $(DEA_GH)/prod/products_prod.csv
-
-index: ## 4. Index some data (Change extents with BBOX='<left>,<bottom>,<right>,<top>')
-	docker-compose exec -T jupyter stac-to-dc \
-		--catalog-href=https://earth-search.aws.element84.com/v0/ \
-		--bbox=$(BBOX) \
-		--collections=sentinel-s2-l2a-cogs \
-		--datetime=2021-06-01/2021-07-01
-	docker-compose exec -T jupyter stac-to-dc \
-		--catalog-href=https://planetarycomputer.microsoft.com/api/stac/v1/ \
-		--collections=io-lulc
-	docker-compose exec -T jupyter stac-to-dc \
-		--catalog-href=https://planetarycomputer.microsoft.com/api/stac/v1/ \
-		--collections=nasadem \
-		--bbox=$(BBOX)
 
 index-sentinel:
 	docker-compose exec -T jupyter stac-to-dc \
@@ -77,10 +62,10 @@ upload-s3: # Update S3 template (this is owned by Digital Earth Australia)
 	aws s3 cp cube-in-a-box-cloudformation.yml s3://opendatacube-cube-in-a-box/ --acl public-read
 
 build-image:
-	docker build --tag opendatacube/cube-in-a-box .
+	docker build --tag digitalearthafrica/cube-in-a-box .
 
 push-image:
-	docker push opendatacube/cube-in-a-box
+	docker push digitalearthafrica/cube-in-a-box
 
 up-prod: ## Bring up production version
 	docker-compose -f docker-compose-prod.yml pull
@@ -88,8 +73,7 @@ up-prod: ## Bring up production version
 	docker-compose run checkdb
 	docker-compose -f docker-compose.yml -f docker-compose-prod.yml up --detach --no-build
 
-# This section can be used to deploy onto CloudFormation instead of the 'magic link'
-create-infra:
+create-infra:  ## Deploy to AWS
 	aws cloudformation create-stack \
 		--region eu-west-1 \
 		--stack-name odc-test \
@@ -98,7 +82,7 @@ create-infra:
 		--tags Key=Name,Value=OpenDataCube \
 		--capabilities CAPABILITY_NAMED_IAM
 
-update-infra:
+update-infra: ## Update AWS deployment
 	aws cloudformation update-stack \
 		--stack-name eu-west-1 \
 		--template-body file://cube-in-a-box-cloudformation.yml \

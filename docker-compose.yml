@@ -4,9 +4,9 @@ services:
   postgres:
     image: postgis/postgis:12-2.5
     environment:
-      - POSTGRES_DB=opendatacube
-      - POSTGRES_PASSWORD=opendatacubepassword
-      - POSTGRES_USER=opendatacube
+      - POSTGRES_DB=digitalearthafrica
+      - POSTGRES_PASSWORD=digitalearthafricapassword
+      - POSTGRES_USER=digitalearthafrica
     volumes:
       - ./data/pg:/var/lib/postgresql/data
     ports:
@@ -17,9 +17,9 @@ services:
     build: .
     environment:
       - DB_HOSTNAME=postgres
-      - DB_USERNAME=opendatacube
-      - DB_PASSWORD=opendatacubepassword
-      - DB_DATABASE=opendatacube
+      - DB_USERNAME=digitalearthafrica
+      - DB_PASSWORD=digitalearthafricapassword
+      - DB_DATABASE=digitalearthafrica
       - AWS_NO_SIGN_REQUEST=true
       - CIABPASSWORD=${CIABPASSWORD:-secretpassword}
     links:

@@ -13,7 +13,7 @@ on:
       - created
 
 env:
-  IMAGE_NAME: opendatacube/cube-in-a-box
+  IMAGE_NAME: digitalearthafrica/cube-in-a-box
 
 jobs:
   docker:
