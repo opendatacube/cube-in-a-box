@@ -18,7 +18,7 @@ _First time users of Docker should run:_
 * Start a local environment: `docker-compose up`
 * Set up your local postgres database (after the above has finished) using:
   * `docker-compose exec jupyter datacube -v system init`
-  * `docker-compose exec jupyter datacube dc-sync-products https://raw.githubusercontent.com/digitalearthafrica/config/master/prod/products_prod.csv`
+  * `docker-compose exec jupyter dc-sync-products https://raw.githubusercontent.com/digitalearthafrica/config/master/prod/products_prod.csv`
 * Index a default region with sentinel data:
   * `docker-compose exec jupyter stac-to-dc --catalog-href=https://explorer.digitalearth.africa/stac/ --collections=s2_l2a --bbox=25,20,35,30 --limit=10`
 * Shutdown your local environment:
