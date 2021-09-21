@@ -5,8 +5,6 @@
 ## at 'http://localhost' with password 'secretpassword'
 .PHONY: help setup up down clean
 
-DEA_GH := https://raw.githubusercontent.com/digitalearthafrica/config/master
-
 BBOX := 25,20,35,30
 
 help: ## Print this help
@@ -26,7 +24,9 @@ init: ## 2. Prepare the database
 	docker-compose exec -T jupyter datacube -v system init
 
 products: ## 3. Add all product definitions
-	docker-compose exec -T jupyter dc-sync-products $(DEA_GH)/prod/products_prod.csv
+	docker-compose exec -T jupyter dc-sync-products https://raw.githubusercontent.com/digitalearthafrica/config/master/prod/products_prod.csv
+
+index: index-sentinel index-landsat ## 4. Index a few products
 
 index-sentinel:
 	docker-compose exec -T jupyter stac-to-dc \
@@ -40,7 +40,7 @@ index-landsat:
 		--catalog-href=https://explorer.digitalearth.africa/stac/ \
 		--collections=ls8_sr \
 		--bbox=$(BBOX) \
-		--datetime=2020-01-01
+		--datetime=2020-01-02
 
 down: ## Bring down the system
 	docker-compose down
