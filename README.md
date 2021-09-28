@@ -35,7 +35,7 @@ Once deployed, if you navigate to the IP of the deployed instance, you can acces
 
 ### Magic link
 
-[Launch a Cube in a Box](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?stackName=cube-in-a-box&templateURL=http://opendatacube-cube-in-a-box.s3.amazonaws.com/cube-in-a-box-cloudformation.yml)
+[Launch a Cube in a Box](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?stackName=cube-in-a-box&templateURL=https://cube-in-a-box-deafrica.s3.af-south-1.amazonaws.com/cube-in-a-box-cloudformation.yml)
 
 You need to be logged in to the AWS Console deploy using this URL. Once logged in, click the link, and follow the prompts including settings a bounding box region of interest, EC2 instance type and password for Jupyter.
 

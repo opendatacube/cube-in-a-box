@@ -59,7 +59,7 @@ logs: ## Show the logs from the stack
 	docker-compose logs --follow
 
 upload-s3: # Update S3 template (this is owned by Digital Earth Australia)
-	aws s3 cp cube-in-a-box-cloudformation.yml s3://opendatacube-cube-in-a-box/ --acl public-read
+	aws s3 cp cube-in-a-box-cloudformation.yml s3://cube-in-a-box-deafrica/ --acl public-read
 
 build-image:
 	docker build --tag digitalearthafrica/cube-in-a-box .
