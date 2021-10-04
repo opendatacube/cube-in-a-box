@@ -18,9 +18,9 @@ _First time users of Docker should run:_
 * Start a local environment: `docker-compose up`
 * Set up your local postgres database (after the above has finished) using:
   * `docker-compose exec jupyter datacube -v system init`
-  * `docker-compose exec jupyter datacube product add https://raw.githubusercontent.com/digitalearthafrica/config/master/products/esa_s2_l2a.odc-product.yaml`
-* Index a default region with:
-  * `docker-compose exec jupyter bash -c "stac-to-dc --bbox='25,20,35,30' --collections='sentinel-s2-l2a-cogs' --datetime='2020-01-01/2020-03-31'"`
+  * `docker-compose exec jupyter dc-sync-products https://raw.githubusercontent.com/digitalearthafrica/config/master/prod/products_prod.csv`
+* Index a default region with sentinel data:
+  * `docker-compose exec jupyter stac-to-dc --catalog-href=https://explorer.digitalearth.africa/stac/ --collections=s2_l2a --bbox=25,20,35,30 --limit=10`
 * Shutdown your local environment:
   * `docker-compose down`
 
@@ -35,7 +35,7 @@ Once deployed, if you navigate to the IP of the deployed instance, you can acces
 
 ### Magic link
 
-[Launch a Cube in a Box](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?stackName=cube-in-a-box&templateURL=http://opendatacube-cube-in-a-box.s3.amazonaws.com/cube-in-a-box-cloudformation.yml)
+[Launch a Cube in a Box](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?stackName=cube-in-a-box&templateURL=https://cube-in-a-box-deafrica.s3.af-south-1.amazonaws.com/cube-in-a-box-cloudformation.yml)
 
 You need to be logged in to the AWS Console deploy using this URL. Once logged in, click the link, and follow the prompts including settings a bounding box region of interest, EC2 instance type and password for Jupyter.
 

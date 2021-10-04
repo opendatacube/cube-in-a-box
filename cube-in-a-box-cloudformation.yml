@@ -78,7 +78,7 @@ Resources:
           #!/bin/bash -ex
           export DEBIAN_FRONTEND=noninteractive
           apt-get update && apt-get install -y wget unzip
-          wget https://github.com/opendatacube/cube-in-a-box/archive/refs/heads/main.zip -O /home/ubuntu/archive.zip
+          wget https://github.com/digitalearthafrica/cube-in-a-box/archive/refs/heads/main.zip -O /home/ubuntu/archive.zip
           unzip /home/ubuntu/archive.zip -d /home/ubuntu
           bash /home/ubuntu/cube-in-a-box-main/setup.sh
           echo 'CIABPASSWORD=${SecretPassword}' > /home/ubuntu/cube-in-a-box-main/.env
