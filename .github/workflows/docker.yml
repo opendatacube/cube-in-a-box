@@ -12,9 +12,6 @@ on:
     types:
       - created
 
-env:
-  IMAGE_NAME: digitalearthafrica/cube-in-a-box
-
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -29,7 +26,16 @@ jobs:
       - name: Build and Push latest Docker image tag
         uses: whoan/docker-build-with-cache-action@v4
         with:
-          image_name: ${{ env.IMAGE_NAME }}
+          image_name: digitalearthafrica/cube-in-a-box
           image_tag: latest
           username: gadockersvc
           password: ${{ secrets.GADOCKERSVC_PASSWORD }}
+
+      - uses: qoqa/action-s3-cp@v1.1
+        env:
+          AWS_S3_BUCKET: deafrica-cube-in-a-box
+          AWS_ACCESS_KEY_ID: ${{ secrets.GA_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.GA_AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'af-south-1'
+          AWS_S3_PATH: '/cube-in-a-box-cloudformation.yml'
+          FILE: 'cube-in-a-box-cloudformation.yml'
