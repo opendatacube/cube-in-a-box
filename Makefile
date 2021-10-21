@@ -5,7 +5,7 @@
 ## at 'http://localhost' with password 'secretpassword'
 .PHONY: help setup up down clean
 
-BBOX := 25,20,35,30
+BBOX := 14.6,-36.3,35.9,-20.7
 
 help: ## Print this help
 	@grep -E '^##.*$$' $(MAKEFILE_LIST) | cut -c'4-'
@@ -26,21 +26,168 @@ init: ## 2. Prepare the database
 products: ## 3. Add all product definitions
 	docker-compose exec -T jupyter dc-sync-products https://raw.githubusercontent.com/digitalearthafrica/config/master/prod/products_prod.csv
 
-index: index-sentinel index-landsat ## 4. Index a few products
+index: index-gm_s2_semiannual index-io_lulc index-jers_sar_mosaic index-ls5_sr index-ls5_st index-ls7_sr index-ls7_st index-ls8_sr index-ls8_st index-pc_s2_annual index-rainfall_chirps_monthly index-s1_rtc index-s2_l2a index-wofs_ls index-wofs_ls_summary_alltime index-wofs_ls_summary_annual ## 4. Index a few products
 
-index-sentinel:
+index-pass: index-fc_ls index-gm_ls5_ls7_annual index-gm_ls8_annual index-gm_s2_annual index-gm_s2_annual_lowres index-gm_s2_semiannual index-io_lulc
+index-fails: index-alos_palsar_mosaic index-dem_srtm index-jers_sar_mosaic
+index-blank: index-crop_mask_eastern index-crop_mask_northern index-crop_mask_western
+
+index-alos_palsar_mosaic:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=alos_palsar_mosaic \
+		--bbox=$(BBOX) \
+		--limit=10
+index-crop_mask_eastern:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=crop_mask_eastern \
+		--bbox=$(BBOX) \
+		--limit=10
+index-crop_mask_northern:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=crop_mask_northern \
+		--bbox=$(BBOX) \
+		--limit=10
+index-crop_mask_western:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=crop_mask_western \
+		--bbox=$(BBOX) \
+		--limit=10
+index-dem_srtm:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=dem_srtm \
+		--bbox=$(BBOX) \
+		--limit=10
+index-fc_ls:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=fc_ls \
+		--bbox=$(BBOX) \
+		--limit=10
+index-gm_ls5_ls7_annual:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=gm_ls5_ls7_annual \
+		--bbox=$(BBOX) \
+		--limit=10
+index-gm_ls8_annual:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=gm_ls8_annual \
+		--bbox=$(BBOX) \
+		--limit=10
+index-gm_s2_annual:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=gm_s2_annual \
+		--bbox=$(BBOX) \
+		--limit=10
+index-gm_s2_annual_lowres:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=gm_s2_annual_lowres \
+		--bbox=$(BBOX) \
+		--limit=10
+index-gm_s2_semiannual:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=gm_s2_semiannual \
+		--bbox=$(BBOX) \
+		--limit=10
+index-io_lulc:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=io_lulc \
+		--bbox=$(BBOX) \
+		--limit=10
+index-jers_sar_mosaic:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=jers_sar_mosaic \
+		--bbox=$(BBOX) \
+		--limit=10
+index-ls5_sr:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=ls5_sr \
+		--bbox=$(BBOX) \
+		--limit=10
+index-ls5_st:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=ls5_st \
+		--bbox=$(BBOX) \
+		--limit=10
+index-ls7_sr:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=ls7_sr \
+		--bbox=$(BBOX) \
+		--limit=10
+index-ls7_st:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=ls7_st \
+		--bbox=$(BBOX) \
+		--limit=10
+index-ls8_sr:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=ls8_sr \
+		--bbox=$(BBOX) \
+		--limit=10
+index-ls8_st:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=ls8_st \
+		--bbox=$(BBOX) \
+		--limit=10
+index-pc_s2_annual:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=pc_s2_annual \
+		--bbox=$(BBOX) \
+		--limit=10
+index-rainfall_chirps_monthly:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=rainfall_chirps_monthly \
+		--bbox=$(BBOX) \
+		--limit=10
+index-s1_rtc:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=s1_rtc \
+		--bbox=$(BBOX) \
+		--limit=10
+index-s2_l2a:
 	docker-compose exec -T jupyter stac-to-dc \
 		--catalog-href=https://explorer.digitalearth.africa/stac/ \
 		--collections=s2_l2a \
 		--bbox=$(BBOX) \
 		--limit=10
-
-index-landsat:
+index-wofs_ls:
 	docker-compose exec -T jupyter stac-to-dc \
 		--catalog-href=https://explorer.digitalearth.africa/stac/ \
-		--collections=ls8_sr \
+		--collections=wofs_ls \
 		--bbox=$(BBOX) \
-		--datetime=2020-01-02
+		--limit=10
+index-wofs_ls_summary_alltime:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=wofs_ls_summary_alltime \
+		--bbox=$(BBOX) \
+		--limit=10
+index-wofs_ls_summary_annual:
+	docker-compose exec -T jupyter stac-to-dc \
+		--catalog-href=https://explorer.digitalearth.africa/stac/ \
+		--collections=wofs_ls_summary_annual \
+		--bbox=$(BBOX) \
+		--limit=10
 
 down: ## Bring down the system
 	docker-compose down
