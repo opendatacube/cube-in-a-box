@@ -5,14 +5,19 @@ The Cube in a Box is a simple way to run the [Open Data Cube](https://www.openda
 ## How to use:
 
 ### 1. Setup:
-_First time users of Docker should run:_
+
+**Checkout the Repo:**
+> `git clone https://github.com/opendatacube/cube-in-a-box.git` or `git clone git@github.com:opendatacube/cube-in-a-box.git`
+
+**First time users of Docker should run:**
 * `bash setup.sh` - This will get your system running and install everything you need.
 * Note that after this step you will either need to logout/login, or run the next step with `sudo`
 
-*If you already have `make` , `docker` and `docker-compose` installed*
+**If you already have `make` , `docker` and `docker-compose` installed. For a custom bounding box append `BBOX=<left>,<bottom>,<right>,<top>` to the end of the command.**
 * `make setup` or `make setup-prod` (for speed)
+* Custom bounding box: `make setup BBOX=-2,37,15,47` or `make setup-prod BBOX=-2,37,15,47`
 
-*If you do not have `make` installed and would rather run the commands individually run the following:*
+**If you do not have `make` installed and would rather run the commands individually run the following:**
 
 * Build a local environment: `docker-compose build`
 * Start a local environment: `docker-compose up`
