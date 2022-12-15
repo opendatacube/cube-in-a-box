@@ -1,0 +1,38 @@
+---
+name: Test Notebook
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**"
+
+  pull:
+    branches:
+      - main
+    paths:
+      - "**"
+
+env:
+  IMAGE_NAME: opendatacube/cube-in-a-box
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.event_name == 'release'
+
+    steps:
+      - name: Checkout git
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up cube-in-a-box
+        run: |
+          make setup
+
+      - name: Run test
+        run: |
+          docker-compose up -d
+          docker-compose exec jupyter bash "-c" "cd /; pytest test/test_notebooks.py"
