@@ -8,7 +8,7 @@ on:
     paths:
       - "**"
 
-  pull:
+  pull_request:
     branches:
       - main
     paths:
