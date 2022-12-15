@@ -29,4 +29,4 @@ jobs:
       - name: Run test
         run: |
           docker-compose up -d
-          docker-compose exec jupyter bash "-c" "cd /; pytest test/test_notebooks.py"
+          docker-compose exec jupyter bash "-c" "cd /; pytest tests/test_notebooks.py"
