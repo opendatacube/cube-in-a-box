@@ -5,14 +5,10 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "**"
 
   pull_request:
     branches:
       - main
-    paths:
-      - "**"
 
 env:
   IMAGE_NAME: opendatacube/cube-in-a-box
@@ -20,8 +16,6 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.event_name == 'release'
-
     steps:
       - name: Checkout git
         uses: actions/checkout@v2
