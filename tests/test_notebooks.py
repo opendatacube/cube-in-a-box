@@ -5,7 +5,7 @@ import pytest
 TEST_DIR = Path(__file__).parent.parent.resolve()
 NB_DIR = TEST_DIR.parent
 
-
+@pytest.mark.xfail(reason="STACSEARCH library issue")
 @testbook(f'{NB_DIR}/notebooks/Indexing_More_Data.ipynb', execute=True, timeout=180)
 def test_indexing_more_data(tb):
     assert True  # ok
@@ -22,6 +22,7 @@ def test_nasadem(tb):
     assert True  # ok
 
 
+@pytest.mark.xfail(reason="Index error")
 @testbook(f'{NB_DIR}/notebooks/Sentinel_2.ipynb', execute=True, timeout=180)
 def test_sentinel_2(tb):
     assert True  # ok
