@@ -34,10 +34,10 @@ index: ## 4. Index some data (Change extents with BBOX='<left>,<bottom>,<right>,
 			--catalog-href='https://earth-search.aws.element84.com/v0/' \
 			--collections='sentinel-s2-l2a-cogs' \
 			--datetime='2021-06-01/2021-07-01'"
-	# docker-compose exec -T jupyter bash -c \
-	# 	"stac-to-dc \
-	# 		--catalog-href=https://planetarycomputer.microsoft.com/api/stac/v1/ \
-	# 		--collections='io-lulc'"
+	docker-compose exec -T jupyter bash -c \
+		"stac-to-dc \
+			--catalog-href=https://planetarycomputer.microsoft.com/api/stac/v1/ \
+			--collections='io-lulc'" || true
 	# doesnt support multipoligon https://github.com/opendatacube/odc-tools/issues/538
 	docker-compose exec -T jupyter bash -c \
 		"stac-to-dc \
