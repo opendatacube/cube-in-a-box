@@ -14,7 +14,6 @@ def test_indexing_more_data(tb):
 def test_esri_land_cover(tb):
     assert True  # ok
 
-@pytest.mark.skip()
 @testbook(f'{NB_DIR}/notebooks/NASADEM.ipynb', execute=True, timeout=180)
 def test_nasadem(tb):
     assert True  # ok
