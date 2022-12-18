@@ -21,6 +21,7 @@ services:
       - DB_PASSWORD=opendatacubepassword
       - DB_DATABASE=opendatacube
       - AWS_NO_SIGN_REQUEST=true
+      - STAC_API_URL=https://explorer.sandbox.dea.ga.gov.au/stac/
       - CIABPASSWORD=${CIABPASSWORD:-secretpassword}
     links:
       - postgres:postgres
@@ -28,6 +29,8 @@ services:
       - "80:8888"
     volumes:
       - ./notebooks:/notebooks
+      - ./tests:/tests
+      - ./utils:/utils
       - ./products.csv:/products.csv
     restart: always
   checkdb:
