@@ -18,8 +18,6 @@ def test_esri_land_cover(tb):
 def test_nasadem(tb):
     assert True  # ok
 
-@pytest.mark.skip()
-@pytest.mark.xfail(reason="Index error")
 @testbook(f'{NB_DIR}/notebooks/Sentinel_2.ipynb', execute=True, timeout=180)
 def test_sentinel_2(tb):
     assert True  # ok
