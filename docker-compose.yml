@@ -23,7 +23,6 @@ services:
       - AWS_NO_SIGN_REQUEST=true
       - STAC_API_URL=https://explorer.sandbox.dea.ga.gov.au/stac/
       - CIABPASSWORD=${CIABPASSWORD:-secretpassword}
-      - STAC_API_URL=https://explorer.sandbox.dea.ga.gov.au/stac/
     links:
       - postgres:postgres
     ports:
