@@ -30,7 +30,6 @@ services:
     volumes:
       - ./notebooks:/notebooks
       - ./tests:/tests
-      - ./utils:/utils
       - ./products.csv:/products.csv
     restart: always
   checkdb:
