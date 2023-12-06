@@ -1,4 +1,4 @@
-FROM osgeo/gdal:ubuntu-small-3.3.1
+FROM osgeo/gdal:ubuntu-small-3.6.3
 
 ENV DEBIAN_FRONTEND=noninteractive \
     LC_ALL=C.UTF-8 \
@@ -15,6 +15,7 @@ RUN apt-get update && \
       # For Psycopg2
       libpq-dev python3-dev \
       python3-pip \
+      python3-wheel \
       wget \
     && apt-get autoclean \
     && apt-get autoremove \

@@ -1,32 +1,34 @@
---extra-index-url https://packages.dea.ga.gov.au/
+ --extra-index-url https://packages.dea.ga.gov.au/
 aiohttp
 aiobotocore[boto3,awscli]==1.0.7
 pyyaml
 wget
 requests
 datacube
-odc-algo
-odc-aws
-odc-aio
-odc-apps-cloud
-odc-apps-dc-tools
+odc-stac
+odc-stats
+odc-dscache
+odc-cloud[ASYNC]
 odc-ui
-odc-index
+odc-io
+odc-apps-dc-tools
+dask==2023.10.1
+distributed==2023.10.1
 # Jupyter components.
 gdal
 scipy
 jupyter==1.0.0
 jupyterlab==3.2.0
-ipyleaflet==0.14.0
+ipyleaflet
 folium
 pandas==1.3.4
-numpy==1.18.5
+numpy
 xarray==0.16.0
-matplotlib==3.4.3
+matplotlib
 geopandas
 scikit-image
 tqdm
-click<8.0.0
+click<8.1.0
 python-dateutil==2.7.5
 sat-search
 
