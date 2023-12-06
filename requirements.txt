@@ -12,8 +12,8 @@ odc-cloud[ASYNC]
 odc-ui
 odc-io
 odc-apps-dc-tools
-dask==2023.12.0
-distributed==2023.12.0
+dask==2023.10.1
+distributed==2023.10.1
 # Jupyter components.
 gdal
 scipy
