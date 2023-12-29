@@ -32,10 +32,10 @@ WORKDIR /notebooks
 ENTRYPOINT ["/tini", "--"]
 
 CMD ["/bin/sh", "-c", "\
-    jupyter notebook --allow-root --ip='0.0.0.0' --NotebookApp.token='secretpassword' & \
     python /cuborizonte/divide_bands.py /cuborizonte/data/aerial_1999 /cuborizonte/data/aerial_1999_processed && \
     python /cuborizonte/build_dataset.py /cuborizonte/data/aerial_1999_processed /cuborizonte/data/aerial_1999 aerial_image_1999 && \
-    python /cuborizonte/indexer.py /cuborizonte/data/aerial_1999_processed"]
+    jupyter notebook --allow-root --ip='0.0.0.0' --NotebookApp.token='secretpassword'"]
+
 
 
 
