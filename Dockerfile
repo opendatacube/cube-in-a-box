@@ -23,10 +23,19 @@ RUN apt-get update && \
 
 COPY requirements.txt /conf/
 COPY products.csv /conf/
+COPY cuborizonte /cuborizonte
+
 RUN pip3 install --no-cache-dir --requirement /conf/requirements.txt
 
 WORKDIR /notebooks
 
 ENTRYPOINT ["/tini", "--"]
 
-CMD ["jupyter", "notebook", "--allow-root", "--ip='0.0.0.0'", "--NotebookApp.token='secretpassword'"]
+CMD ["/bin/sh", "-c", "\
+    jupyter notebook --allow-root --ip='0.0.0.0' --NotebookApp.token='secretpassword' & \
+    python /cuborizonte/divide_bands.py /cuborizonte/data/aerial_1999 /cuborizonte/data/aerial_1999_processed && \
+    python /cuborizonte/build_dataset.py /cuborizonte/data/aerial_1999_processed /cuborizonte/data/aerial_1999 aerial_image_1999 && \
+    python /cuborizonte/indexer.py /cuborizonte/data/aerial_1999_processed"]
+
+
+

@@ -15,6 +15,7 @@ odc-apps-dc-tools
 dask==2023.10.1
 distributed==2023.10.1
 # Jupyter components.
+tqdm
 gdal
 scipy
 jupyter==1.0.0
