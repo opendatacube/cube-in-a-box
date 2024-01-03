@@ -37,3 +37,19 @@ services:
     environment:
       - CHECK_HOST=postgres
       - CHECK_PORT=5432
+
+  django:
+    build: ./django
+    environment:
+      - DJANGO_DB_HOST=postgres
+      - DJANGO_DB_PORT=5432
+      - DJANGO_DB_NAME=opendatacube
+      - DJANGO_DB_USER=opendatacube
+      - DJANGO_DB_PASSWORD=opendatacubepassword
+    volumes:
+      - ./django:/app
+    ports:
+      - "8000:8000"
+    restart: always
+    depends_on:
+    - postgres
