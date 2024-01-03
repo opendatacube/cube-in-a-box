@@ -14,7 +14,7 @@ services:
     restart: always
 
   jupyter:
-    build: .
+    build: ./jupyter
     environment:
       - DB_HOSTNAME=postgres
       - DB_USERNAME=opendatacube
@@ -23,20 +23,17 @@ services:
       - AWS_NO_SIGN_REQUEST=true
       - STAC_API_URL=https://explorer.sandbox.dea.ga.gov.au/stac/
       - CIABPASSWORD=${CIABPASSWORD:-secretpassword}
-    links:
-      - postgres:postgres
     ports:
       - "80:8888"
     volumes:
-      - ./notebooks:/notebooks
-      - ./tests:/tests
-      - ./products.csv:/products.csv
-      - ./cuborizonte:/cuborizonte
+      - ./jupyter/notebooks:/jupyter/notebooks
+      - ./jupyter/cuborizonte:/jupyter/cuborizonte
     restart: always
+    depends_on:
+      - postgres
+
   checkdb:
     image: schaffdev/port_check:latest
     environment:
       - CHECK_HOST=postgres
       - CHECK_PORT=5432
-    links:
-      - postgres:postgres
