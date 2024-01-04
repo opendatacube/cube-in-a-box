@@ -7,7 +7,7 @@ The Cube in a Box is a simple way to run the [Open Data Cube](https://www.openda
   * If the above fails you can follow the following steps:
     1. `docker-compose up`
     2. When the a message like: `No web browser found: could not locate runnable browser` shows. Open a new shell and run the next commands
-    3. `docker-compose exec jupyter datacube -v system init` It starts DBs
+    3. `docker-compose exec django datacube -v system init` It starts DBs
     4.    `docker-compose exec jupyter  python /cuborizonte/divide_bands.py /cuborizonte/data/aerial_1999 /cuborizonte/data/aerial_1999_processed`
           `docker-compose exec jupyter  python /cuborizonte/build_dataset.py /cuborizonte/data/aerial_1999_processed /cuborizonte/data/aerial_1999 aerial_image_1999`
           `docker-compose exec jupyter  python /cuborizonte/divide_bands.py /cuborizonte/data/aerial_2002 /cuborizonte/data/aerial_2002_processed`

@@ -1,20 +1,38 @@
-# Use a imagem base Python
-FROM python:3.10
+FROM osgeo/gdal:ubuntu-small-3.6.3
 
-# Defina o diretório de trabalho no contêiner
+ENV DEBIAN_FRONTEND=noninteractive \
+    LC_ALL=C.UTF-8 \
+    LANG=C.UTF-8 \
+    TINI_VERSION=v0.19.0
+
+# Adicionando Tini para um encerramento mais limpo
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+
+# Instalando dependências
+RUN apt-get update && \
+    apt-get install -y \
+        libgdal-dev \
+        python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# Copie os arquivos de requisitos para o diretório de trabalho
+# Copiando arquivos necessários
 COPY requirements.txt .
 
-# Instale as dependências do projeto
+# Instalando dependências do Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copie o restante dos arquivos para o diretório de trabalho
+
+# Copiando o restante do código-fonte
 COPY . .
 
-# Expõe a porta 8000 para a aplicação Django
+# Expondo a porta 8000
 EXPOSE 8000
 
-# Comando para iniciar o servidor Gunicorn
+# Definindo o comando de inicialização usando Tini
+ENTRYPOINT ["/tini", "--"]
+
+# Comando padrão para iniciar o Django e Gunicorn
 CMD ["sh", "-c", "python manage.py migrate && gunicorn cuborizonte.wsgi:application -b 0.0.0.0:8000"]
