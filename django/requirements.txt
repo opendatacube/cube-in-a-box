@@ -1,6 +1,7 @@
 Django>=3.0,<4.0
 psycopg2>=2.8
 gunicorn
+whitenoise
  --extra-index-url https://packages.dea.ga.gov.au/
 aiohttp
 aiobotocore[boto3,awscli]==1.0.7

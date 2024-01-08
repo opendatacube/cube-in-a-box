@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cuborizonte</title>
+    <!-- Load Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Load Leaflet Draw -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    <!-- Load Custom CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'maps/css/map.css' %}">
+</head>
+<body>
+
+    <div id="container">
+        <!-- Sidebar for the form -->
+        <div id="sidebar">
+            <form id="coordenadasForm" action="{% url 'get_cube' %}" method="post">
+                {% csrf_token %}
+                <label for="latitude_inicial">Latitude Inicial:</label><br>
+                <input type="number" id="latitude_inicial" name="latitude_inicial" step="any"><br>
+                <label for="longitude_inicial">Longitude Inicial:</label><br>
+                <input type="number" id="longitude_inicial" name="longitude_inicial" step="any"><br>
+                <label for="latitude_final">Latitude Final:</label><br>
+                <input type="number" id="latitude_final" name="latitude_final" step="any"><br>
+                <label for="longitude_final">Longitude Final:</label><br>
+                <input type="number" id="longitude_final" name="longitude_final" step="any"><br>
+                <input type="submit" value="Buscar Dados">
+            </form>
+            
+        </div>
+
+        <!-- Container for the map -->
+        <div id="map"></div>
+    </div>
+
+    <!-- Include the external JavaScript file -->
+    <script src="{% static 'maps/js/map.js' %}"></script>
+</body>
+</html>
