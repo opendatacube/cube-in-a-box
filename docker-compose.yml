@@ -9,6 +9,7 @@ services:
       - POSTGRES_USER=opendatacube
     volumes:
       - ./data/pg:/var/lib/postgresql/data
+      - ./data:/data
     ports:
       - 5432:5432
     restart: always
@@ -28,6 +29,7 @@ services:
     volumes:
       - ./jupyter/notebooks:/jupyter/notebooks
       - ./jupyter/cuborizonte:/jupyter/cuborizonte
+      - ./data:/data
     restart: always
     depends_on:
       - postgres
@@ -48,6 +50,7 @@ services:
     volumes:
       - ./django:/app
       - static_volume:/app/static
+      - ./data:/data
     ports:
       - "8000:8000"
     restart: always
