@@ -17,7 +17,7 @@
     <div id="container">
         <!-- Sidebar for the form -->
         <div id="sidebar">
-            <form id="coordenadasForm" action="{% url 'get_cube' %}" method="post">
+            <form id="coordenadasForm" method="post">
                 {% csrf_token %}
                 <label for="latitude_inicial">Latitude Inicial:</label><br>
                 <input type="number" id="latitude_inicial" name="latitude_inicial" step="any"><br>
@@ -27,7 +27,9 @@
                 <input type="number" id="latitude_final" name="latitude_final" step="any"><br>
                 <label for="longitude_final">Longitude Final:</label><br>
                 <input type="number" id="longitude_final" name="longitude_final" step="any"><br>
-                <input type="submit" value="Buscar Dados">
+
+                <button type="button" id="buscarDadosButton" onclick="buscarDados()">Buscar Dados</button>
+                <button type="button" id="downloadButton" onclick="downloadDados()">Download</button>
             </form>
             
         </div>

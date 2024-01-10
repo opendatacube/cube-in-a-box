@@ -60,3 +60,103 @@ map.on('click', function () {
         document.getElementById('longitude_final').value = '';
     }
 });
+
+
+
+function enviarRequisicaoJson(url, dados) {
+    return fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(dados)
+    });
+}
+
+// Função auxiliar para obter o valor do cookie CSRF
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+function buscarDados() {
+    // Obtenha as coordenadas do formulário
+    var latitudeInicial = document.getElementById('latitude_inicial').value;
+    var longitudeInicial = document.getElementById('longitude_inicial').value;
+    var latitudeFinal = document.getElementById('latitude_final').value;
+    var longitudeFinal = document.getElementById('longitude_final').value;
+
+    // Construindo o objeto com os dados
+    var dados = {
+        latitude_inicial: latitudeInicial,
+        longitude_inicial: longitudeInicial,
+        latitude_final: latitudeFinal,
+        longitude_final: longitudeFinal,
+    };
+
+    // Enviando a requisição AJAX
+    enviarRequisicaoJson('/get_images/', dados)
+    .then(response => response.json())
+    .then(data => {
+        // Exibir cada imagem no mapa
+        data.images.forEach(urlDaImagem => {
+            exibirImagemNoMapa(urlDaImagem);
+        });
+    })
+    .catch(error => console.error('Erro ao buscar dados:', error));
+}
+
+
+function downloadDados() {
+    var dados = {
+        latitude_inicial: document.getElementById('latitude_inicial').value,
+        longitude_inicial: document.getElementById('longitude_inicial').value,
+        latitude_final: document.getElementById('latitude_final').value,
+        longitude_final: document.getElementById('longitude_final').value
+    };
+
+    enviarRequisicaoJson('/download_cube/', dados)
+    .then(response => {
+        if (response.ok) {
+            return response.blob();
+        }
+        throw new Error('Falha no download');
+    })
+    .then(blob => {
+        // Cria um link para download
+        var url = window.URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'datacube_images.zip';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(error => console.error('Erro ao baixar dados:', error));
+}
+
+
+
+function exibirImagemNoMapa(urlDaImagem) {
+    // Obter as coordenadas do formulário
+    var latitudeInicial = document.getElementById('latitude_inicial').value;
+    var longitudeInicial = document.getElementById('longitude_inicial').value;
+    var latitudeFinal = document.getElementById('latitude_final').value;
+    var longitudeFinal = document.getElementById('longitude_final').value;
+    
+    var imageBounds = [[latitudeInicial, longitudeInicial], [latitudeFinal, longitudeFinal]];
+    L.imageOverlay(urlDaImagem, imageBounds).addTo(map);
+}
