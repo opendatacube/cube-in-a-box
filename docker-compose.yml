@@ -9,12 +9,13 @@ services:
       - POSTGRES_USER=opendatacube
     volumes:
       - ./data/pg:/var/lib/postgresql/data
+      - ./data:/data
     ports:
       - 5432:5432
     restart: always
 
   jupyter:
-    build: .
+    build: ./jupyter
     environment:
       - DB_HOSTNAME=postgres
       - DB_USERNAME=opendatacube
@@ -23,19 +24,43 @@ services:
       - AWS_NO_SIGN_REQUEST=true
       - STAC_API_URL=https://explorer.sandbox.dea.ga.gov.au/stac/
       - CIABPASSWORD=${CIABPASSWORD:-secretpassword}
-    links:
-      - postgres:postgres
     ports:
       - "80:8888"
     volumes:
-      - ./notebooks:/notebooks
-      - ./tests:/tests
-      - ./products.csv:/products.csv
+      - ./jupyter/notebooks:/jupyter/notebooks
+      - ./jupyter/cuborizonte:/jupyter/cuborizonte
+      - ./data:/data
     restart: always
+    depends_on:
+      - postgres
+
   checkdb:
     image: schaffdev/port_check:latest
     environment:
       - CHECK_HOST=postgres
       - CHECK_PORT=5432
-    links:
-      - postgres:postgres
+
+  django:
+    build: ./django
+    environment:
+      - DB_HOSTNAME=postgres
+      - DB_USERNAME=opendatacube
+      - DB_PASSWORD=opendatacubepassword
+      - DB_DATABASE=opendatacube
+    volumes:
+      - ./django:/app
+      - static_volume:/app/static
+      - ./data:/data
+    ports:
+      - "8000:8000"
+    restart: always
+    depends_on:
+      - postgres
+    command: >
+      sh -c "python manage.py makemigrations &&
+            python manage.py migrate &&
+            python manage.py collectstatic --noinput &&
+            gunicorn cuborizonte.wsgi:application --bind 0.0.0.0:8000"
+
+volumes:
+  static_volume:

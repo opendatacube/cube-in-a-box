@@ -22,11 +22,16 @@ RUN apt-get update && \
     && rm -rf /var/lib/{apt,dpkg,cache,log}
 
 COPY requirements.txt /conf/
-COPY products.csv /conf/
+COPY cuborizonte /cuborizonte
+
 RUN pip3 install --no-cache-dir --requirement /conf/requirements.txt
 
-WORKDIR /notebooks
+WORKDIR jupyter/notebooks
 
 ENTRYPOINT ["/tini", "--"]
 
-CMD ["jupyter", "notebook", "--allow-root", "--ip='0.0.0.0'", "--NotebookApp.token='secretpassword'"]
+CMD ["/bin/sh", "-c", "jupyter notebook --allow-root --ip='0.0.0.0' --NotebookApp.token='secretpassword'"]
+
+
+
+

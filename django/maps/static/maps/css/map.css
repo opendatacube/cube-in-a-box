@@ -1,0 +1,25 @@
+#map {
+    height: 100vh;
+    width: 100vw;
+    flex: 3;
+}
+
+#container {
+    display: flex;
+}
+#sidebar {
+    position: absolute;
+    top: 10px;   
+    left: 80px;  
+    z-index: 1000; 
+    background: rgba(14, 221, 204, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+    width: 300px;
+}
+
+#coordenadasForm input[type="text"],
+#coordenadasForm input[type="submit"] {
+    width: 100%;
+    margin-bottom: 5px;
+}

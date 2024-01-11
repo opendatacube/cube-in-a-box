@@ -1,4 +1,0 @@
-product,definition
-s2_l2a,https://raw.githubusercontent.com/digitalearthafrica/config/master/products/esa_s2_l2a.odc-product.yaml
-io_lulc,https://raw.githubusercontent.com/opendatacube/datacube-dataset-config/master/products/io_lulc.odc-product.yaml
-nasadem,https://raw.githubusercontent.com/opendatacube/datacube-dataset-config/master/products/nasadem.odc-product.yaml
